@@ -6,6 +6,6 @@ drf-yasg==1.21.10
 psycopg2==2.9.10
 Pillow==11.3.0
 python-dotenv==1.0.0
-django-environ==0.10.0
+django-environ==0.13.0
 whitenoise==6.5.0
 setuptools==68.2.2
