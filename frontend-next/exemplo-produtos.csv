@@ -1,0 +1,9 @@
+codigo,nome,categoria,marca,fornecedor,localizacao,precoCompra,precoVenda,quantidadeAtual,quantidadeMinima,unidadeMedida,dataValidade,status,observacoes
+VERM001,Vermífugo Canino,Medicamentos,VetPharma,Distribuidora ABC,Prateleira A1,25.50,45.00,50,10,Comprimido,2025-12-31,ativo,Para cães de 10-20kg
+VERM002,Vermífugo Felino,Medicamentos,VetPharma,Distribuidora ABC,Prateleira A1,22.00,38.00,30,5,Comprimido,2025-10-15,ativo,Para gatos adultos
+RACAO001,Ração Premium Cães,Alimentação,PetFood,Fornecedor XYZ,Estoque B2,35.00,65.00,100,20,Kg,2024-08-30,ativo,Ração para cães adultos
+RACAO002,Ração Premium Gatos,Alimentação,PetFood,Fornecedor XYZ,Estoque B2,32.00,58.00,80,15,Kg,2024-09-15,ativo,Ração para gatos adultos
+SHAM001,Shampoo Antipulgas,Higiene,CleanPet,Distribuidora DEF,Prateleira C3,18.00,32.00,25,8,Frasco,2025-06-20,ativo,Shampoo com repelente natural
+COLAR001,Coleira Antipulgas,Acessórios,PetSafe,Fornecedor GHI,Estoque D4,12.00,25.00,40,10,Unidade,2026-01-10,ativo,Coleira ajustável para cães
+BRINQ001,Brinquedo Mordedor,Brinquedos,PlayPet,Fornecedor JKL,Prateleira E5,8.50,18.00,60,15,Unidade,,ativo,Brinquedo resistente para cães
+VACINA001,Vacina V8,Medicamentos,VetLab,Distribuidora MNO,Geladeira F1,45.00,85.00,20,5,Dose,2024-12-15,ativo,Manter refrigerado entre 2-8°C

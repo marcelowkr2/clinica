@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste de Autenticação</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { margin: 10px; padding: 10px; }
+        .result { margin: 10px 0; padding: 10px; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Teste de Autenticação</h1>
+    
+    <button onclick="setToken()">Definir Token</button>
+    <button onclick="checkToken()">Verificar Token</button>
+    <button onclick="testAPI()">Testar API</button>
+    <button onclick="clearToken()">Limpar Token</button>
+    
+    <div id="result" class="result"></div>
+    
+    <script>
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Nzg3MjczLCJpYXQiOjE3NTQ3ODM2NzMsImp0aSI6IjE2MGMwYWU3MjBkMjQzOTNiMzgyMDYwZDcyZjk4OGQxIiwidXNlcl9pZCI6Mn0.PpAVusgIsswXRmSnQQ5QHXB_nwus3CR5-T_GOIr-ilE";
+        const refreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1NDg3MDA3MywiaWF0IjoxNzU0NzgzNjczLCJqdGkiOiI4YWVlNDFhYmIwMjQ0MzFhYjI5NDg0ODA3NWI4YjI2MiIsInVzZXJfaWQiOjJ9.oHGWtdSXm8kEEdH-PivNqtok_XUWhMDcLLtkklH_aQ4";
+        
+        function log(message) {
+            document.getElementById('result').innerHTML += '<div>' + message + '</div>';
+            console.log(message);
+        }
+        
+        function setToken() {
+            localStorage.setItem('access_token', token);
+            localStorage.setItem('refresh_token', refreshToken);
+            localStorage.setItem('user', JSON.stringify({
+                id: 2,
+                username: 'admin',
+                email: 'admin@test.com'
+            }));
+            log('✅ Token definido no localStorage');
+        }
+        
+        function checkToken() {
+            const storedToken = localStorage.getItem('access_token');
+            const user = localStorage.getItem('user');
+            
+            if (storedToken) {
+                log('✅ Token encontrado: ' + storedToken.substring(0, 50) + '...');
+                log('✅ Usuário: ' + user);
+            } else {
+                log('❌ Nenhum token encontrado');
+            }
+        }
+        
+        async function testAPI() {
+            const storedToken = localStorage.getItem('access_token');
+            
+            if (!storedToken) {
+                log('❌ Nenhum token encontrado. Defina um token primeiro.');
+                return;
+            }
+            
+            try {
+                log('🔄 Testando API...');
+                
+                const response = await fetch('http://127.0.0.1:8000/api/agendamentos-vacina/', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + storedToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log('✅ API funcionando! Dados recebidos: ' + JSON.stringify(data, null, 2));
+                } else {
+                    const errorData = await response.text();
+                    log('❌ Erro na API (' + response.status + '): ' + errorData);
+                }
+            } catch (error) {
+                log('❌ Erro na requisição: ' + error.message);
+            }
+        }
+        
+        function clearToken() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('user');
+            log('🗑️ Tokens removidos');
+        }
+        
+        // Verificar automaticamente ao carregar
+        window.onload = function() {
+            log('📄 Página carregada');
+            checkToken();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Temporário</title>
+</head>
+<body>
+    <h1>Login Temporário para Teste</h1>
+    <button onclick="login()">Fazer Login como Admin</button>
+    <button onclick="logout()">Logout</button>
+    <button onclick="checkTokens()">Verificar Tokens</button>
+    
+    <script>
+        function login() {
+            const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Nzg3MDQ4LCJpYXQiOjE3NTQ3ODM0NDgsImp0aSI6ImQ1NmNkMDdhMjVmYTQ0OGRiN2M5NmNhZGZjMTQzYzI2IiwidXNlcl9pZCI6Mn0.PF10ljFkzQdMlMDXHdx7i2wSZcUW6RlAOZDoAQT0qCQ";
+            const refreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1NDg2OTg0OCwiaWF0IjoxNzU0NzgzNDQ4LCJqdGkiOiJhNzBjNzJkNzJhNzE0ZGE3YjNjNzJhNzE0ZGE3YjNjNyIsInVzZXJfaWQiOjJ9.example";
+            
+            localStorage.setItem('access_token', accessToken);
+            localStorage.setItem('refresh_token', refreshToken);
+            localStorage.setItem('user', JSON.stringify({
+                id: 2,
+                username: 'admin',
+                email: 'admin@test.com',
+                first_name: 'Admin',
+                last_name: 'User',
+                user_type: 1
+            }));
+            
+            alert('Login realizado! Tokens salvos no localStorage.');
+        }
+        
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('user');
+            alert('Logout realizado! Tokens removidos.');
+        }
+        
+        function checkTokens() {
+            const accessToken = localStorage.getItem('access_token');
+            const refreshToken = localStorage.getItem('refresh_token');
+            const user = localStorage.getItem('user');
+            
+            console.log('Access Token:', accessToken);
+            console.log('Refresh Token:', refreshToken);
+            console.log('User:', user);
+            
+            if (accessToken) {
+                alert('Usuário está logado!');
+            } else {
+                alert('Usuário não está logado.');
+            }
+        }
+    </script>
+</body>
+</html>
