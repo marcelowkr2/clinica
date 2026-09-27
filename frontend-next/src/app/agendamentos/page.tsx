@@ -65,7 +65,7 @@ export default function AgendamentosPage() {
   // Função para organizar agendamentos por período do dia
   const organizeAgendamentosByPeriod = () => {
     const selectedDateStr = selectedDate.toISOString().split('T')[0];
-    
+
     // Primeiro filtrar por data
     let agendamentosDodia = agendamentos.filter(agendamento => {
       const agendamentoDate = new Date(agendamento.data_hora).toISOString().split('T')[0];
@@ -77,11 +77,11 @@ export default function AgendamentosPage() {
       agendamentosDodia = agendamentosDodia.filter(agendamento => {
         const searchLower = searchTerm.toLowerCase();
         return (
-          (agendamento.pet_nome && agendamento.pet_nome.toLowerCase().includes(searchLower)) ||
+          (agendamento.paciente_nome && agendamento.paciente_nome.toLowerCase().includes(searchLower)) ||
           (agendamento.servico_nome && agendamento.servico_nome.toLowerCase().includes(searchLower)) ||
-          (agendamento.tutor_nome && agendamento.tutor_nome.toLowerCase().includes(searchLower)) ||
-          (agendamento.tutor_sobrenome && agendamento.tutor_sobrenome.toLowerCase().includes(searchLower)) ||
-          (agendamento.veterinario_nome && agendamento.veterinario_nome.toLowerCase().includes(searchLower)) ||
+          (agendamento.responsavel_nome && agendamento.responsavel_nome.toLowerCase().includes(searchLower)) ||
+          (agendamento.responsavel_sobrenome && agendamento.responsavel_sobrenome.toLowerCase().includes(searchLower)) ||
+          (agendamento.medico_nome && agendamento.medico_nome.toLowerCase().includes(searchLower)) ||
           (agendamento.observacoes && agendamento.observacoes.toLowerCase().includes(searchLower))
         );
       });
@@ -123,7 +123,7 @@ export default function AgendamentosPage() {
 
       if (agendamento) {
         return (
-          <div 
+          <div
             key={horario}
             className="border rounded-lg p-3 bg-blue-50 border-blue-200 cursor-pointer hover:bg-blue-100"
             onClick={() => {
@@ -138,15 +138,15 @@ export default function AgendamentosPage() {
               </span>
             </div>
             <div>
-               <p className="font-medium">{agendamento.pet_nome || `Pet ID: ${agendamento.pet}`}</p>
+               <p className="font-medium">{agendamento.paciente_nome || `Paciente ID: ${agendamento.paciente}`}</p>
                <p className="text-sm text-gray-600">{agendamento.servico_nome || `Serviço ID: ${agendamento.servico}`}</p>
                <p className="text-sm text-gray-600">
-                 Tutor: {agendamento.tutor_nome && agendamento.tutor_sobrenome 
-                   ? `${agendamento.tutor_nome} ${agendamento.tutor_sobrenome}` 
+                 Responsável: {agendamento.responsavel_nome && agendamento.responsavel_sobrenome
+                   ? `${agendamento.responsavel_nome} ${agendamento.responsavel_sobrenome}`
                    : 'N/A'}
                </p>
                <p className="text-sm text-gray-600">
-                 Dr(a). {agendamento.veterinario_nome || `Veterinário ID: ${agendamento.veterinario}`}
+                 Dr(a). {agendamento.medico_nome || `Médico ID: ${agendamento.medico}`}
                </p>
                {agendamento.observacoes && (
                  <p className="text-sm text-gray-600">Obs: {agendamento.observacoes}</p>
@@ -156,7 +156,7 @@ export default function AgendamentosPage() {
               <button className="p-1 text-blue-600 hover:bg-blue-200 rounded">
                 <Eye className="h-4 w-4" />
               </button>
-              <button 
+              <button
                 className="p-1 text-green-600 hover:bg-green-100 rounded ml-1"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -165,7 +165,7 @@ export default function AgendamentosPage() {
               >
                 <Edit className="h-4 w-4" />
               </button>
-              <button 
+              <button
                 className="p-1 text-red-600 hover:bg-red-100 rounded ml-1"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -196,7 +196,7 @@ export default function AgendamentosPage() {
       isAuthenticated,
       isRedirecting
     });
-    
+
     // Aguarda o loading do auth terminar antes de redirecionar
     if (!authLoading && !isRedirecting) {
       // Verificar autenticação
@@ -238,7 +238,7 @@ export default function AgendamentosPage() {
             {searchType === 'agendamentos' && searchTerm && (
               <p className="text-sm text-gray-600 mt-1">
                 Resultados para: "{searchTerm}"
-                <button 
+                <button
                   onClick={clearSearch}
                   className="ml-2 text-blue-600 hover:text-blue-800 underline"
                 >
@@ -247,7 +247,7 @@ export default function AgendamentosPage() {
               </p>
             )}
           </div>
-          
+
           <button
             className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors mt-4 sm:mt-0"
             onClick={() => setIsModalOpen(true)}
@@ -260,8 +260,8 @@ export default function AgendamentosPage() {
         <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <div className="flex items-center gap-2">
             <Calendar className="h-5 w-5 text-gray-500" />
-            <input 
-              type="date" 
+            <input
+              type="date"
               className="border rounded-lg px-3 py-2"
               value={selectedDate.toISOString().split('T')[0]}
               onChange={(e) => setSelectedDate(new Date(e.target.value))}
@@ -269,7 +269,7 @@ export default function AgendamentosPage() {
           </div>
           <p className="text-gray-600 capitalize">{formattedDate}</p>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {loading ? (
             <div className="p-8 text-center">
@@ -306,9 +306,9 @@ export default function AgendamentosPage() {
       </div>
 
       {/* Modal de Novo Agendamento */}
-      <NovoAgendamentoModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <NovoAgendamentoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         onSave={(agendamento) => {
           console.log('Novo agendamento:', agendamento);
           toast({
@@ -318,7 +318,7 @@ export default function AgendamentosPage() {
           setIsModalOpen(false);
           // Recarregar lista de agendamentos
           loadAgendamentos();
-        }} 
+        }}
       />
 
       {/* Modal de Detalhes do Agendamento */}

@@ -6,6 +6,19 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from .serializers import UserSerializer, RegisterSerializer
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        # Adiciona os dados do usuário na resposta do token
+        data['user'] = UserSerializer(self.user).data
+        return data
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
 class UserDetailView(APIView):
     """
     View para obter detalhes do usuário autenticado

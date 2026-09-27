@@ -6,6 +6,8 @@ import { useAuth } from '@/hooks/auth';
 import Link from 'next/link';
 import { useToast } from '@/components/ui/use-toast';
 
+import { Stethoscope, Activity, User, Lock, ArrowRight } from 'lucide-react';
+
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -20,8 +22,9 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      console.log('Attempting login with:', { username, password: '***' });
-      await login({ username, password });
+      const cleanUsername = username.trim();
+      console.log('Attempting login with:', { username: cleanUsername, password: '***' });
+      await login({ username: cleanUsername, password });
       console.log('Login successful, redirecting to dashboard');
       router.push('/dashboard');
     } catch (error) {
@@ -38,22 +41,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 p-4">
-      <div className="w-full max-w-md rounded-2xl bg-white dark:bg-gray-800 p-8 shadow-2xl backdrop-blur-sm border border-white/20 dark:border-gray-700">
-        <div className="mb-6 text-center">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-4">
-            <span className="text-2xl">🐾</span>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-400 via-blue-500 to-indigo-600 dark:from-gray-900 dark:via-blue-900 dark:to-emerald-900 p-4">
+      <div className="w-full max-w-md rounded-3xl bg-white/95 dark:bg-gray-800/95 p-8 shadow-2xl backdrop-blur-xl border border-white/20 dark:border-gray-700">
+        <div className="mb-8 text-center">
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg transform -rotate-6">
+            <Stethoscope className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">VetSys</h1>
-          <p className="text-gray-600 dark:text-gray-300">Sistema de Gerenciamento Veterinário</p>
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <Activity className="h-5 w-5 text-emerald-500 animate-pulse" />
+            <h1 className="text-4xl font-black bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent tracking-tight">MediHub</h1>
+          </div>
+          <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Sistema de Gestão de Clínicas</p>
         </div>
 
-        <h2 className="mb-6 text-2xl font-semibold text-gray-700 text-center">Bem-vindo de volta! 👋</h2>
+        <div className="mb-8 space-y-1">
+          <h2 className="text-2xl font-black text-foreground text-center">Bem-vindo de volta!</h2>
+          <p className="text-sm text-muted-foreground text-center font-medium">Acesse sua conta para gerenciar seus atendimentos</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              👤 Nome de Usuário
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-2">
+            <label htmlFor="username" className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2">
+              <User className="h-3 w-3" /> Nome de Usuário
             </label>
             <input
               id="username"
@@ -61,14 +70,14 @@ export default function LoginPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="block w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-4 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-400 transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-400"
+              className="block w-full rounded-2xl border-2 border-border/50 bg-background text-foreground px-4 py-3.5 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all duration-300 font-medium placeholder:text-muted-foreground/50"
               placeholder="Digite seu nome de usuário"
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              🔒 Senha
+          <div className="space-y-2">
+            <label htmlFor="password" className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2">
+              <Lock className="h-3 w-3" /> Senha
             </label>
             <input
               id="password"
@@ -76,45 +85,46 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="block w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-4 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-400 transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-400"
+              className="block w-full rounded-2xl border-2 border-border/50 bg-background text-foreground px-4 py-3.5 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all duration-300 font-medium placeholder:text-muted-foreground/50"
               placeholder="Digite sua senha"
             />
           </div>
 
-          <div>
+          <div className="pt-2">
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-3 text-white font-semibold hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transform hover:scale-105 transition-all duration-200 shadow-lg"
+              className="group w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-600 px-4 py-4 text-white font-black uppercase tracking-widest hover:from-emerald-600 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 disabled:opacity-50 transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-xl shadow-emerald-500/20"
             >
               {loading ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Entrando...
+                <span className="flex items-center justify-center gap-3">
+                  <div className="h-5 w-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Autenticando...
                 </span>
               ) : (
-                '🚀 Entrar'
+                <span className="flex items-center justify-center gap-2">
+                  Entrar no Sistema
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </span>
               )}
             </button>
           </div>
         </form>
 
-        <div className="mt-8 text-center">
+        <div className="mt-8 text-center space-y-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+              <div className="w-full border-t border-border/50"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">ou</span>
+            <div className="relative flex justify-center text-[10px] font-black uppercase tracking-widest">
+              <span className="px-4 bg-white dark:bg-gray-800 text-muted-foreground/50">ou</span>
             </div>
           </div>
-          <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
+
+          <p className="text-sm font-medium text-muted-foreground">
             Não tem uma conta?{' '}
-            <Link href="/register" className="font-medium bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:from-blue-700 hover:to-purple-700 transition-all duration-200">
-              ✨ Registre-se
+            <Link href="/register" className="font-black text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-400 transition-colors underline underline-offset-4 decoration-2">
+              Registre-se agora
             </Link>
           </p>
         </div>

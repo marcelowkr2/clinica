@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import ServicoEstetismo, BanhoTosa
+from .models import ServicoProcedimento, Procedimento, AvaliacaoProcedimento, FotoProcedimento
 
 
-admin.site.register(ServicoEstetismo)
-admin.site.register(BanhoTosa)
+admin.site.register(ServicoProcedimento)
+admin.site.register(Procedimento)
+admin.site.register(AvaliacaoProcedimento)
+admin.site.register(FotoProcedimento)

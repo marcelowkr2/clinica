@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = 'http://localhost:8001/api';
 
 interface ApiRequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -22,7 +22,7 @@ export const apiRequest = async (
   options: ApiRequestOptions = {}
 ): Promise<any> => {
   const token = localStorage.getItem('access_token');
-  
+
   if (!token) {
     throw new ApiError('Token de autenticação não encontrado', 401);
   }
@@ -44,7 +44,7 @@ export const apiRequest = async (
 
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    
+
     if (!response.ok) {
       let errorData;
       try {
@@ -52,7 +52,7 @@ export const apiRequest = async (
       } catch {
         errorData = { detail: 'Erro desconhecido' };
       }
-      
+
       throw new ApiError(
         errorData.detail || errorData.message || `Erro ${response.status}`,
         response.status,
@@ -70,7 +70,7 @@ export const apiRequest = async (
     if (error instanceof ApiError) {
       throw error;
     }
-    
+
     throw new ApiError(
       'Erro de conexão. Verifique se o servidor está funcionando.',
       0,

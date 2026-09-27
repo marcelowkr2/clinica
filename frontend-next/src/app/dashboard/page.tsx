@@ -42,7 +42,7 @@ export default function DashboardPage() {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/dashboard/stats/');
+      const response = await fetch('http://localhost:8001/api/dashboard/stats/');
       if (response.ok) {
         const data = await response.json();
         setStats(data);
@@ -266,7 +266,7 @@ export default function DashboardPage() {
                       ))
                     ) : (
                       <tr>
-                        <td className="px-6 py-12 text-center" colSpan={3">
+                        <td className="px-6 py-12 text-center" colSpan={3}>
                           <div className="flex flex-col items-center justify-center text-muted-foreground">
                             <div className="h-12 w-12 bg-muted rounded-full flex items-center justify-center mb-3">
                               <Users className="h-6 w-6 opacity-20" />

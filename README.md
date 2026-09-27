@@ -63,9 +63,9 @@ docker-compose up -d --build
 ```
 
 A aplicação estará disponível em:
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000
-- **Admin Django**: http://localhost:8000/admin (Usuário: `admin`, Senha: `admin123`)
+- **Frontend**: http://localhost:3001
+- **Backend API**: http://localhost:8001
+- **Admin Django**: http://localhost:8001/admin (Usuário: `admin`, Senha: `admin123`)
 
 ### Instalação Manual
 

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar, Syringe, User, Clock } from 'lucide-react';
-import PetsService, { Pet, Vacina, AgendamentoVacina } from '@/services/pets';
+import PetsService, { Paciente, Vacina, AgendamentoVacina } from '@/services/pets';
 import UsersService, { User as UserType } from '@/services/users';
 
 interface NovoAgendamentoVacinaModalProps {
@@ -32,7 +32,7 @@ const NovoAgendamentoVacinaModal: React.FC<NovoAgendamentoVacinaModalProps> = ({
     observacoes: ''
   });
 
-  const [pets, setPets] = useState<Pet[]>([]);
+  const [pets, setPets] = useState<Paciente[]>([]);
   const [vacinas, setVacinas] = useState<Vacina[]>([]);
   const [veterinarios, setVeterinarios] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(false);
@@ -64,14 +64,14 @@ const NovoAgendamentoVacinaModal: React.FC<NovoAgendamentoVacinaModalProps> = ({
   const carregarDados = async () => {
     try {
       const [petsData, vacinasData, medicosData] = await Promise.all([
-        PetsService.getAllPets(),
+        PetsService.getAllPacientes(),
         PetsService.getAllVacinas(),
         UsersService.getMedicos()
       ]);
 
       setPets(petsData);
       setVacinas(vacinasData);
-      setMedicos(medicosData);
+      setVeterinarios(medicosData);
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
     }

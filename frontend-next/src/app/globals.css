@@ -97,3 +97,14 @@ body {
 .border-contrast {
   @apply border-gray-400 dark:border-gray-600;
 }
+
+/* Utilitário para esconder barras de rolagem */
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

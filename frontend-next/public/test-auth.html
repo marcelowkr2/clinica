@@ -61,7 +61,7 @@
             try {
                 log('🔄 Testando API...');
                 
-                const response = await fetch('http://127.0.0.1:8000/api/agendamentos-vacina/', {
+                const response = await fetch('http://localhost:8001/api/agendamentos-vacina/', {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + storedToken,

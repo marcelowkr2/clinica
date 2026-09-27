@@ -75,25 +75,6 @@ export default function ExamesPage() {
     }
   }, [isAuthenticated, authLoading, router]);
 
-  const fetchExames = async () => {
-    try {
-      setLoading(true);
-      const data = await ExamesService.getExames();
-      setExames(data);
-    } catch (error) {
-      console.error('Erro ao carregar exames:', error);
-      // Fallback para dados simulados em caso de erro
-      setExames(dadosSimulados);
-      toast({
-        title: 'Aviso',
-        description: 'Usando dados simulados - API não disponível',
-        variant: 'default',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleNovoExame = async (dadosExame: any) => {
     try {
       const novoExame = await ExamesService.createExame(dadosExame);
@@ -225,8 +206,8 @@ export default function ExamesPage() {
   if (authLoading || isRedirecting) {
     return (
       <VetLayout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800"></div>
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </VetLayout>
     );

@@ -17,7 +17,7 @@ export function EditarUsuarioModal({ isOpen, onClose, onSave, usuario }: EditarU
     email: '',
     telefone: '',
     cargo: '',
-    perfil: 'auxiliar' as 'admin' | 'veterinario' | 'recepcionista' | 'auxiliar',
+    perfil: 'auxiliar' as 'admin' | 'medico' | 'recepcionista' | 'auxiliar',
     status: 'ativo' as 'ativo' | 'inativo' | 'bloqueado',
   });
 
@@ -42,7 +42,7 @@ export function EditarUsuarioModal({ isOpen, onClose, onSave, usuario }: EditarU
       ...prev,
       [name]: value
     }));
-    
+
     // Limpar erro do campo quando o usuário começar a digitar
     if (errors[name]) {
       setErrors(prev => ({
@@ -81,19 +81,19 @@ export function EditarUsuarioModal({ isOpen, onClose, onSave, usuario }: EditarU
     switch (perfil) {
       case 'admin':
         return ['todos'];
-      case 'veterinario':
+      case 'medico':
         return ['consultas', 'exames', 'receitas', 'cirurgias'];
       case 'recepcionista':
-        return ['agendamentos', 'clientes', 'pets', 'vendas'];
+        return ['agendamentos', 'clientes', 'pacientes', 'vendas'];
       case 'auxiliar':
       default:
-        return ['pets'];
+        return ['pacientes'];
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -199,7 +199,7 @@ export function EditarUsuarioModal({ isOpen, onClose, onSave, usuario }: EditarU
                   className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.cargo ? 'border-red-500' : 'border-gray-300'
                   }`}
-                  placeholder="Ex: Veterinário Clínico"
+                  placeholder="Ex: Médico Clínico"
                 />
                 {errors.cargo && <p className="text-red-500 text-sm mt-1">{errors.cargo}</p>}
               </div>
@@ -222,7 +222,7 @@ export function EditarUsuarioModal({ isOpen, onClose, onSave, usuario }: EditarU
                 >
                   <option value="auxiliar">Auxiliar</option>
                   <option value="recepcionista">Recepcionista</option>
-                  <option value="veterinario">Veterinário</option>
+                  <option value="medico">Médico</option>
                   <option value="admin">Administrador</option>
                 </select>
                 <p className="text-sm text-gray-500 mt-1">

@@ -138,7 +138,7 @@ class DashboardStats(generics.GenericAPIView):
     def get(self, request):
         from django.utils import timezone
         from django.db.models import Count, Sum, F
-        from banho_tosa.models import BanhoTosa
+        from banho_tosa.models import Procedimento
         from internacao.models import Internacao
         from decimal import Decimal
 
@@ -159,7 +159,7 @@ class DashboardStats(generics.GenericAPIView):
         ).aggregate(total=Sum('valor'))['total'] or 0
 
         # Receita do dia (procedimentos concluídos)
-        receita_procedimentos = BanhoTosa.objects.filter(
+        receita_procedimentos = Procedimento.objects.filter(
             data_realizacao__date=hoje,
             status='concluido'
         ).aggregate(total=Sum('valor_total'))['total'] or 0

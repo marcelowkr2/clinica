@@ -5,7 +5,7 @@ from django.contrib.auth.password_validation import validate_password
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'user_type', 'phone', 'cpf', 'crmv')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'user_type', 'phone', 'cpf', 'crm')
         read_only_fields = ('id',)
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'password2', 'first_name', 'last_name')
+        fields = ('username', 'email', 'password', 'password2', 'first_name', 'last_name', 'user_type', 'phone')
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -45,6 +45,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password'],
             first_name=validated_data.get('first_name', ''),
-            last_name=validated_data.get('last_name', '')
+            last_name=validated_data.get('last_name', ''),
+            user_type=validated_data.get('user_type', 4),
+            phone=validated_data.get('phone', '')
         )
         return user

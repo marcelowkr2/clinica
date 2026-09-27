@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VetSys - Sistema Veterinário",
-  description: "Sistema de gerenciamento para clínicas veterinárias",
+  title: "MediHub - Sistema de Gestão Clínica",
+  description: "Sistema de gerenciamento para clínicas médicas",
 };
 
 export default function RootLayout({

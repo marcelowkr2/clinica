@@ -69,7 +69,7 @@ export function VetLayout({ children }: VetLayoutProps) {
                       {user?.first_name ? `${user.first_name} ${user.last_name}` : user?.username || 'Usuário'}
                     </span>
                     <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground/70">
-                      Veterinário
+                      Médico
                     </span>
                   </div>
                   <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
@@ -92,7 +92,7 @@ export function VetLayout({ children }: VetLayoutProps) {
           </header>
 
           {/* Conteúdo Principal */}
-          <main className="flex-1 overflow-auto p-4 md:p-8">
+          <main className="flex-1 overflow-auto p-4 md:p-8 scrollbar-hide">
             <div className="max-w-7xl mx-auto space-y-8">
               {children}
             </div>

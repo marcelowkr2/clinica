@@ -11,9 +11,9 @@ export interface Agendamento {
   servico: number;
   servico_nome?: string;
   data_hora: string;
-  status: string;
-  observacoes?: string;
+  status: 'agendado' | 'em_andamento' | 'concluido' | 'cancelado';
   valor: number;
+  observacoes?: string;
   data_criacao?: string;
   data_atualizacao?: string;
   tipo?: string; // Para identificar se é vacinação

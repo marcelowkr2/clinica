@@ -183,8 +183,8 @@ export default function InternacaoPage() {
   if (authLoading || isRedirecting) {
     return (
       <VetLayout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800"></div>
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </VetLayout>
     );
@@ -192,39 +192,32 @@ export default function InternacaoPage() {
 
   return (
     <VetLayout>
-      <div className="p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-3">
-            <Bed className="h-8 w-8 text-orange-600" />
-            <h1 className="text-2xl font-bold">Internação</h1>
+            <div className="p-2.5 bg-orange-500/10 rounded-xl text-orange-500">
+              <Bed className="h-6 w-6" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">Internação</h1>
+              <p className="text-sm text-muted-foreground">Monitoramento de pacientes internados.</p>
+            </div>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 mt-4 sm:mt-0 w-full sm:w-auto">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <div className="relative flex-1 sm:flex-none">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
-                placeholder="Buscar por paciente, tutor ou motivo..."
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-80"
+                placeholder="Buscar por paciente ou motivo..."
+                className="pl-10 pr-4 py-2 bg-white dark:bg-card border border-border/50 rounded-xl w-full sm:w-64 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            
-            <select
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="todos">Todos os Status</option>
-              <option value="internado">Internado</option>
-              <option value="alta">Alta</option>
-              <option value="transferido">Transferido</option>
-              <option value="obito">Óbito</option>
-            </select>
 
             <button
-              className="flex items-center justify-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+              className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-xl hover:opacity-90 transition-all font-bold text-sm shadow-sm shadow-primary/20"
               onClick={() => setIsModalOpen(true)}
             >
               <Plus className="h-5 w-5" />
@@ -233,137 +226,135 @@ export default function InternacaoPage() {
           </div>
         </div>
 
-        {/* Cards de Estatísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Pacientes Internados</p>
-                <p className="text-2xl font-bold text-orange-600">
-                  {estatisticas?.ativas || 0}
-                </p>
-              </div>
-              <Bed className="h-8 w-8 text-orange-600" />
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Altas Hoje</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {estatisticas?.alta_hoje || 0}
-                </p>
-              </div>
-              <Calendar className="h-8 w-8 text-green-600" />
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total de Internações</p>
-                <p className="text-2xl font-bold text-blue-600">{estatisticas?.total || 0}</p>
-              </div>
-              <User className="h-8 w-8 text-blue-600" />
-            </div>
+        {/* Filtros rápidos */}
+        <div className="flex flex-wrap items-center gap-4 p-4 bg-secondary/30 rounded-2xl border border-border/30">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Status:</span>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-transparent border-none text-sm font-bold text-foreground focus:ring-0 outline-none cursor-pointer"
+            >
+              <option value="todos">Todos os Status</option>
+              <option value="internado">Internado</option>
+              <option value="alta">Alta</option>
+              <option value="transferido">Transferido</option>
+              <option value="obito">Óbito</option>
+            </select>
           </div>
         </div>
 
+        {/* Cards de Estatísticas */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+           <div className="p-4 flex items-center gap-4 bg-white dark:bg-card rounded-2xl shadow-sm border border-border/50">
+             <div className="p-2.5 bg-orange-500/10 rounded-xl text-orange-500">
+               <Bed className="w-5 h-5" />
+             </div>
+             <div>
+               <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Internados</p>
+               <p className="text-xl font-black text-foreground">{estatisticas?.ativas || 0}</p>
+             </div>
+           </div>
+
+           <div className="p-4 flex items-center gap-4 bg-white dark:bg-card rounded-2xl shadow-sm border border-border/50">
+             <div className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-500">
+               <CheckCircle className="w-5 h-5" />
+             </div>
+             <div>
+               <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Altas Hoje</p>
+               <p className="text-xl font-black text-foreground">{estatisticas?.alta_hoje || 0}</p>
+             </div>
+           </div>
+
+           <div className="p-4 flex items-center gap-4 bg-white dark:bg-card rounded-2xl shadow-sm border border-border/50">
+             <div className="p-2.5 bg-blue-500/10 rounded-xl text-blue-500">
+               <Activity className="w-5 h-5" />
+             </div>
+             <div>
+               <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Total Histórico</p>
+               <p className="text-xl font-black text-foreground">{estatisticas?.total || 0}</p>
+             </div>
+           </div>
+        </div>
+
         {/* Tabela de Internações */}
-        <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+        <div className="bg-white dark:bg-card rounded-2xl shadow-md border border-border/50 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full">
+              <thead className="bg-muted/30">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paciente</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tutor</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entrada</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Internado</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Motivo</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Paciente</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Tutor</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Entrada</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Dias</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Motivo</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-right text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Ações</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-border/50">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-4 text-center">
-                      <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-800"></div>
-                        <span className="ml-2">Carregando internações...</span>
+                    <td colSpan={7} className="px-6 py-20 text-center">
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                        <span className="text-sm font-medium text-muted-foreground">Carregando internações...</span>
                       </div>
                     </td>
                   </tr>
                 ) : filteredInternacoes.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
-                      Nenhuma internação encontrada
+                    <td colSpan={7} className="px-6 py-20 text-center">
+                      <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                        <div className="p-4 bg-muted rounded-full">
+                          <Bed className="h-8 w-8 opacity-20" />
+                        </div>
+                        <p className="text-sm font-medium">Nenhuma internação encontrada.</p>
+                      </div>
                     </td>
                   </tr>
                 ) : (
                   filteredInternacoes.map((internacao) => (
-                    <tr key={internacao.id} className="hover:bg-gray-50">
+                    <tr key={internacao.id} className="hover:bg-muted/20 transition-colors group">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{internacao.pet_nome}</div>
+                        <span className="text-sm font-bold text-foreground">{internacao.pet_nome}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{internacao.tutor_nome}</div>
-                        <div className="text-sm text-gray-500 flex items-center">
-                          <Phone className="h-3 w-3 mr-1" />
-                          {internacao.tutor_telefone}
-                        </div>
+                        <span className="text-sm font-medium text-muted-foreground">{internacao.tutor_nome}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 flex items-center">
-                          <Calendar className="h-4 w-4 mr-1 text-gray-400" />
-                          {formatDate(internacao.data_entrada)}
-                        </div>
+                        <span className="text-sm text-muted-foreground">{formatDate(internacao.data_entrada)}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 flex items-center">
-                          <Clock className="h-4 w-4 mr-1 text-gray-400" />
-                          {internacao.dias_internado} dias
-                        </div>
+                        <span className="text-sm font-bold text-foreground">{internacao.dias_internado} dias</span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900 max-w-xs truncate" title={internacao.motivo}>
-                          {internacao.motivo}
-                        </div>
+                        <span className="text-sm text-muted-foreground line-clamp-1">{internacao.motivo}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(internacao.status)}`}>
+                        <span className={`px-2 py-1 text-[10px] font-bold rounded-full ${getStatusColor(internacao.status)}`}>
                           {getStatusText(internacao.status)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-2">
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <div className="flex items-center justify-end gap-1">
                           <button
-                            onClick={() => {
-                              console.log('Clicou em Ver Evolução para:', internacao.pet_nome);
-                              setEvolucaoModal({ isOpen: true, internacao });
-                            }}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="Ver Evolução"
+                            onClick={() => setEvolucaoModal({ isOpen: true, internacao })}
+                            className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                            title="Evolução"
                           >
                             <Activity className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => {
-                              console.log('Clicou em Editar para:', internacao.pet_nome);
-                              setEditarModal({ isOpen: true, internacao });
-                            }}
-                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                            onClick={() => setEditarModal({ isOpen: true, internacao })}
+                            className="p-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors"
                             title="Editar"
                           >
                             <Edit className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => {
-                              console.log('Clicou em Dar Alta para:', internacao.pet_nome);
-                              setAltaModal({ isOpen: true, internacao });
-                            }}
-                            className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                            onClick={() => setAltaModal({ isOpen: true, internacao })}
+                            className="p-2 text-muted-foreground hover:text-orange-500 hover:bg-orange-500/10 rounded-lg transition-colors"
                             title="Dar Alta"
                           >
                             <CheckCircle className="h-4 w-4" />

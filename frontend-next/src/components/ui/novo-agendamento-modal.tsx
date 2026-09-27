@@ -147,7 +147,7 @@ export function NovoAgendamentoModal({ isOpen, onClose, onSave }: NovoAgendament
                 </option>
                 {pacientes.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.nome} ({p.especie}{p.raca ? ` - ${p.raca}` : ''}) - Tutor: {p.tutor.user.first_name} {p.tutor.user.last_name}
+                    {p.nome} - Responsável: {p.tutor.user.first_name} {p.tutor.user.last_name}
                   </option>
                 ))}
               </select>
@@ -213,7 +213,7 @@ export function NovoAgendamentoModal({ isOpen, onClose, onSave }: NovoAgendament
             </div>
             
             <div>
-              <label htmlFor="veterinario" className="block text-sm font-medium text-gray-700 mb-1">Veterinário*</label>
+              <label htmlFor="veterinario" className="block text-sm font-medium text-gray-700 mb-1">Médico*</label>
               <select
                 id="veterinario"
                 value={veterinario}
@@ -223,7 +223,7 @@ export function NovoAgendamentoModal({ isOpen, onClose, onSave }: NovoAgendament
                 className="w-full border rounded-md px-3 py-2 disabled:bg-gray-100"
               >
                 <option value="">
-                  {loading ? 'Carregando veterinários...' : 'Selecione um veterinário'}
+                  {loading ? 'Carregando médicos...' : 'Selecione um médico'}
                 </option>
                 {veterinarios.map((v) => (
                   <option key={v.id} value={v.id}>

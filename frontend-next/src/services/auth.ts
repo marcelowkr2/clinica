@@ -25,24 +25,21 @@ class AuthService {
   private static readonly REFRESH_TOKEN_KEY = 'refresh_token';
   private static readonly USER_KEY = 'user_data';
 
-  // Método para fazer login - AJUSTE para endpoint Django REST
+  // Método para fazer login - Otimizado para retornar usuário e tokens em uma única chamada
   static async login(credentials: LoginCredentials): Promise<User> {
     try {
       console.log('🔐 Tentando login no endpoint:', '/api/token/');
       const response = await api.post('/api/token/', credentials);
-      const { access, refresh } = response.data;
+      const { access, refresh, user } = response.data;
 
       // Armazenar tokens
       this.setToken(access);
       this.setRefreshToken(refresh);
 
-      // Buscar dados do usuário
-      const userResponse = await api.get('/api/user/');
-      const userData = userResponse.data;
+      // Armazenar dados do usuário (já vêm na resposta do login agora)
+      this.setUser(user);
 
-      this.setUser(userData);
-
-      return userData;
+      return user;
     } catch (error) {
       console.error('❌ Erro no login:', error);
       throw error;

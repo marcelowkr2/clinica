@@ -26,9 +26,16 @@ class PlanoList(generics.ListCreateAPIView):
         return Plano.objects.all()
 
 class ResponsavelList(generics.ListCreateAPIView):
-    queryset = Responsavel.objects.all()
     serializer_class = ResponsavelSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Responsavel.objects.all()
+        telefone = self.request.query_params.get('telefone')
+        if telefone:
+            # Buscar pelo telefone do usuário associado
+            queryset = queryset.filter(user__phone=telefone)
+        return queryset
 
 class ResponsavelDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Responsavel.objects.all()
@@ -40,11 +47,14 @@ class PacienteListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        # Otimização com select_related para evitar N+1 no banco
+        queryset = Paciente.objects.select_related('responsavel__user', 'convenio', 'plano').all()
+
         # Filtra pacientes pelo responsável (se usuário for responsável)
         user = self.request.user
         if user.user_type == 4:  # Responsável
-            return Paciente.objects.filter(responsavel__user=user)
-        return Paciente.objects.all()
+            queryset = queryset.filter(responsavel__user=user)
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save()

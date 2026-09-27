@@ -6,13 +6,11 @@ import PetsService from '@/services/pets';
 import receitasService from '@/services/receitas';
 import { useToast } from '@/components/ui/use-toast';
 
-interface Pet {
+interface Paciente {
   id: number;
   nome: string;
-  especie: string;
-  raca: string;
-  tutor_nome: string;
-  tutor_telefone: string;
+  responsavel_nome: string;
+  responsavel_telefone: string;
 }
 
 interface Medicamento {
@@ -49,8 +47,8 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
     data_prescricao: new Date().toISOString().split('T')[0],
     observacoes: ''
   });
-  
-  const [pets, setPets] = useState<Pet[]>([]);
+
+  const [pets, setPets] = useState<Paciente[]>([]);
   const [medicamentos, setMedicamentos] = useState<Medicamento[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -89,7 +87,7 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
       duracao: '',
       observacoes: ''
     };
-    
+
     setMedicamentos(prev => [...prev, novoMedicamento]);
   };
 
@@ -98,14 +96,14 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
   };
 
   const atualizarMedicamento = (id: string, campo: keyof Medicamento, valor: string) => {
-    setMedicamentos(prev => prev.map(med => 
+    setMedicamentos(prev => prev.map(med =>
       med.id === id ? { ...med, [campo]: valor } : med
     ));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.pet || medicamentos.length === 0) {
       toast({
         title: 'Erro',
@@ -116,7 +114,7 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
     }
 
     // Validar medicamentos
-    const medicamentosValidos = medicamentos.filter(med => 
+    const medicamentosValidos = medicamentos.filter(med =>
       med.nome.trim() && med.dosagem.trim() && med.frequencia.trim() && med.duracao.trim()
     );
 
@@ -131,7 +129,7 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
 
     try {
       setLoading(true);
-      
+
       const receitaData = {
         pet: parseInt(formData.pet),
         veterinario: 1, // TODO: Pegar do usuário logado
@@ -141,7 +139,7 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
         status: 'ativa',
         medicamentos: medicamentosValidos
       };
-      
+
       onSubmit(receitaData);
       resetForm();
       onClose();
@@ -185,7 +183,7 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
             <X className="h-6 w-6" />
           </button>
         </div>
-        
+
         <div className="p-6">
           {loading ? (
             <div className="flex items-center justify-center py-8">
@@ -211,12 +209,12 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
                     <option value="">Selecione um paciente</option>
                     {pets.map((pet) => (
                       <option key={pet.id} value={pet.id}>
-                        {pet.nome} - {pet.tutor_nome}
+                        {pet.nome} - {pet.responsavel_nome}
                       </option>
                     ))}
                   </select>
                 </div>
-                
+
                 <div>
                   <label htmlFor="data_prescricao" className="block text-sm font-medium text-gray-700 mb-1">
                     <Calendar className="inline h-4 w-4 mr-1" />
@@ -265,7 +263,7 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
                           </button>
                         )}
                       </div>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -285,7 +283,7 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
                             ))}
                           </datalist>
                         </div>
-                        
+
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Dosagem*
@@ -298,7 +296,7 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
                             className="w-full border rounded-md px-3 py-2"
                           />
                         </div>
-                        
+
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Frequência*
@@ -311,7 +309,7 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
                             className="w-full border rounded-md px-3 py-2"
                           />
                         </div>
-                        
+
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Duração*
@@ -325,7 +323,7 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
                           />
                         </div>
                       </div>
-                      
+
                       <div className="mt-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Observações
@@ -357,7 +355,7 @@ export function NovaReceitaModal({ isOpen, onClose, onSubmit }: NovaReceitaModal
                   placeholder="Observações adicionais sobre a receita..."
                 />
               </div>
-              
+
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <button
                   type="button"

@@ -56,47 +56,17 @@ export default function PacientesPage() {
     try {
       setLoading(true);
       const pacientesList = await PacientesService.getAllPacientes();
-      const convenios = await PacientesService.getAllConvenios();
 
-      const pacientesData = await Promise.all(
-        pacientesList.map(async (paciente: Paciente) => {
-          try {
-            // Buscar responsável
-            const responsavel = await PacientesService.getResponsavel(paciente.responsavel);
-            const user = await UsersService.getUser(responsavel.user);
+      const pacientesData = pacientesList.map((paciente: any) => ({
+        id: paciente.id,
+        nome: paciente.nome,
+        convenio: paciente.convenio_nome || 'Particular',
+        plano: paciente.plano_nome || 'Particular',
+        responsavel: paciente.responsavel_nome || 'Não informado',
+        contato: paciente.responsavel_telefone || 'Não informado',
+      }));
 
-            // Buscar convênio
-            const convenio = convenios.find(c => c.id === paciente.convenio);
-
-            // Buscar plano se existir
-            let planoNome = 'Particular';
-            if (paciente.plano) {
-              try {
-                const planos = await PacientesService.getPlanosByConvenio(paciente.convenio);
-                const plano = planos.find(p => p.id === paciente.plano);
-                planoNome = plano?.nome || 'Particular';
-              } catch (error) {
-                console.error('Erro ao buscar plano:', error);
-              }
-            }
-
-            return {
-              id: paciente.id,
-              nome: paciente.nome,
-              convenio: convenio?.nome || 'Particular',
-              plano: planoNome,
-              responsavel: `${user.first_name} ${user.last_name}`.trim(),
-              contato: user.phone || user.email || 'Não informado',
-            };
-          } catch (error) {
-            console.error('Erro ao processar paciente:', error);
-            return null;
-          }
-        })
-      );
-
-      const pacientesValidos = pacientesData.filter(p => p !== null) as PacienteDisplay[];
-      setPacientes(pacientesValidos);
+      setPacientes(pacientesData);
     } catch (error) {
       console.error('Erro ao carregar pacientes:', error);
       toast({
@@ -169,7 +139,7 @@ export default function PacientesPage() {
   if (authLoading || isRedirecting) {
     return (
       <VetLayout>
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center py-20">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </VetLayout>

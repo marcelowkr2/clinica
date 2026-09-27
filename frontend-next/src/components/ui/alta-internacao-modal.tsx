@@ -65,11 +65,11 @@ export function AltaInternacaoModal({ isOpen, onClose, onUpdate, internacao }: A
         const transacaoData = {
           internacao_id: internacao.id,
           valor: parseFloat(valorTotal),
-          descricao: `Alta de internação - ${internacao.pet_nome}`,
+          descricao: `Alta de internação - ${internacao.paciente_nome}`,
           data_alta: dataAltaISO
         };
         
-        await fetch('http://127.0.0.1:8000/api/financeiro/transacao-automatica', {
+        await fetch('http://localhost:8001/api/financeiro/transacao-automatica', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ export function AltaInternacaoModal({ isOpen, onClose, onUpdate, internacao }: A
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-xl font-semibold">Dar Alta - {internacao?.pet_nome || 'Paciente'}</h2>
+          <h2 className="text-xl font-semibold">Dar Alta - {internacao?.paciente_nome || 'Paciente'}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X className="h-6 w-6" />
           </button>
@@ -149,10 +149,10 @@ export function AltaInternacaoModal({ isOpen, onClose, onUpdate, internacao }: A
             <h3 className="font-medium mb-3">Informações da Internação</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="font-medium">Paciente:</span> {internacao.pet_nome}
+                <span className="font-medium">Paciente:</span> {internacao.paciente_nome}
               </div>
               <div>
-                <span className="font-medium">Tutor:</span> {internacao.tutor_nome}
+                <span className="font-medium">Responsável:</span> {internacao.responsavel_nome}
               </div>
               <div>
                 <span className="font-medium">Data de Entrada:</span>{' '}
@@ -162,7 +162,7 @@ export function AltaInternacaoModal({ isOpen, onClose, onUpdate, internacao }: A
                 <span className="font-medium">Motivo:</span> {internacao.motivo}
               </div>
               <div>
-                <span className="font-medium">Veterinário:</span> {internacao.veterinario_nome}
+                <span className="font-medium">Médico:</span> {internacao.medico_nome}
               </div>
               <div>
                 <span className="font-medium">Valor Diária:</span> R$ {internacao.valor_diaria}

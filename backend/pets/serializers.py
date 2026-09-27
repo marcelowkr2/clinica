@@ -34,6 +34,11 @@ class VacinaAplicadaSerializer(serializers.ModelSerializer):
         ]
 
 class PacienteSerializer(serializers.ModelSerializer):
+    responsavel_nome = serializers.CharField(source='responsavel.user.get_full_name', read_only=True)
+    responsavel_telefone = serializers.CharField(source='responsavel.user.phone', read_only=True)
+    convenio_nome = serializers.CharField(source='convenio.nome', read_only=True)
+    plano_nome = serializers.CharField(source='plano.nome', read_only=True, allow_null=True)
+
     class Meta:
         model = Paciente
         fields = '__all__'

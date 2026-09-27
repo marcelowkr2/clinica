@@ -68,8 +68,8 @@ export function NovoAtendimentoModal({ isOpen, onClose, onSave }: NovoAtendiment
                   >
                     <option value="">Selecione um paciente</option>
                     {/* Aqui seriam listados os pacientes do sistema */}
-                    <option value="paciente1">Rex (Tutor: João Silva)</option>
-                    <option value="paciente2">Luna (Tutor: Maria Oliveira)</option>
+                    <option value="paciente1">João Silva (Responsável: Maria Silva)</option>
+                    <option value="paciente2">Ana Oliveira (Responsável: Pedro Oliveira)</option>
                   </select>
                 </div>
                 
@@ -84,7 +84,7 @@ export function NovoAtendimentoModal({ isOpen, onClose, onSave }: NovoAtendiment
                   >
                     <option value="">Selecione</option>
                     <option value="consulta">Consulta</option>
-                    <option value="vacina">Vacinação</option>
+                    <option value="vacina">Imunização</option>
                     <option value="exame">Exame</option>
                     <option value="cirurgia">Cirurgia</option>
                     <option value="retorno">Retorno</option>
@@ -93,7 +93,7 @@ export function NovoAtendimentoModal({ isOpen, onClose, onSave }: NovoAtendiment
                 </div>
                 
                 <div>
-                  <label htmlFor="veterinario" className="block text-sm font-medium text-gray-700 mb-1">Veterinário*</label>
+                  <label htmlFor="veterinario" className="block text-sm font-medium text-gray-700 mb-1">Médico*</label>
                   <select
                     id="veterinario"
                     value={veterinario}
@@ -102,7 +102,7 @@ export function NovoAtendimentoModal({ isOpen, onClose, onSave }: NovoAtendiment
                     className="w-full border rounded-md px-3 py-2"
                   >
                     <option value="">Selecione</option>
-                    {/* Aqui seriam listados os veterinários do sistema */}
+                    {/* Aqui seriam listados os médicos do sistema */}
                     <option value="vet1">Dr. Carlos Mendes</option>
                     <option value="vet2">Dra. Ana Paula Santos</option>
                   </select>

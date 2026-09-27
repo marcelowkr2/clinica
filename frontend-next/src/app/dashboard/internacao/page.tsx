@@ -18,7 +18,9 @@ import {
   DollarSign,
   Clock,
   Bed,
-  Phone
+  Phone,
+  Edit,
+  CheckCircle
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import InternacaoService, { Internacao, InternacaoEstatisticas } from '@/services/internacao';
@@ -173,9 +175,9 @@ const InternacaoPage: React.FC = () => {
 
   const filteredInternacoes = internacoes.filter(internacao => {
     const matchesSearch = !searchTerm ||
-      internacao.pet_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      internacao.tutor_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      internacao.veterinario_nome.toLowerCase().includes(searchTerm.toLowerCase());
+      internacao.paciente_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      internacao.responsavel_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      internacao.medico_nome.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === 'todos' || internacao.status === statusFilter;
 
@@ -185,8 +187,8 @@ const InternacaoPage: React.FC = () => {
   if (authLoading || isRedirecting) {
     return (
       <VetLayout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800"></div>
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </VetLayout>
     );
@@ -194,16 +196,21 @@ const InternacaoPage: React.FC = () => {
 
   return (
     <VetLayout>
-      <div className="p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-3">
-            <Bed className="h-8 w-8 text-orange-600" />
-            <h1 className="text-2xl font-bold">Internação - Dashboard</h1>
+            <div className="p-2.5 bg-orange-500/10 rounded-xl text-orange-500">
+              <Bed className="h-6 w-6" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">Internação</h1>
+              <p className="text-sm text-muted-foreground">Monitoramento de pacientes internados.</p>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 mt-4 sm:mt-0 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <button
-              className="flex items-center justify-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+              className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-xl hover:opacity-90 transition-all font-bold text-sm shadow-sm shadow-primary/20"
               onClick={() => setIsModalOpen(true)}
             >
               <Plus className="h-5 w-5" />
@@ -213,234 +220,150 @@ const InternacaoPage: React.FC = () => {
         </div>
 
         {/* Cards de Estatísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Pacientes Internados</p>
-                <p className="text-2xl font-bold text-orange-600">
-                  {estatisticas?.ativas || 0}
-                </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="border-none shadow-sm bg-white dark:bg-card">
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="p-2.5 bg-orange-500/10 rounded-xl text-orange-500">
+                <Bed className="w-5 h-5" />
               </div>
-              <Bed className="h-8 w-8 text-orange-600" />
-            </div>
-          </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Internados</p>
+                <p className="text-xl font-black text-foreground">{estatisticas?.ativas || 0}</p>
+              </div>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Altas Hoje</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {estatisticas?.alta_hoje || 0}
-                </p>
+          <Card className="border-none shadow-sm bg-white dark:bg-card">
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-500">
+                <Calendar className="w-5 h-5" />
               </div>
-              <Calendar className="h-8 w-8 text-green-600" />
-            </div>
-          </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Altas Hoje</p>
+                <p className="text-xl font-black text-foreground">{estatisticas?.alta_hoje || 0}</p>
+              </div>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total de Internações</p>
-                <p className="text-2xl font-bold text-blue-600">{estatisticas?.total || 0}</p>
+          <Card className="border-none shadow-sm bg-white dark:bg-card">
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="p-2.5 bg-blue-500/10 rounded-xl text-blue-500">
+                <User className="w-5 h-5" />
               </div>
-              <User className="h-8 w-8 text-blue-600" />
-            </div>
-          </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Total Histórico</p>
+                <p className="text-xl font-black text-foreground">{estatisticas?.total || 0}</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Filtros */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <input
-              type="text"
-              placeholder="Buscar por paciente, responsável ou médico..."
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          <select
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="todos">Todos os Status</option>
-            <option value="internado">Internado</option>
-            <option value="alta">Alta</option>
-            <option value="transferido">Transferido</option>
-            <option value="obito">Óbito</option>
-          </select>
-        </div>
-
-        {/* Lista de Internações */}
-        <div className="grid gap-4">
-          {loading ? (
-            <div className="bg-white p-8 rounded-lg shadow-sm border text-center">
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-800"></div>
-                <span className="ml-2">Carregando internações...</span>
+        {/* Filtros e Tabela */}
+        <Card className="border-none shadow-md bg-white dark:bg-card overflow-hidden">
+          <div className="p-4 border-b border-border/50 bg-muted/20">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar por paciente, responsável ou médico..."
+                  className="pl-10 rounded-xl border-border/50"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-2">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="bg-white dark:bg-background border border-border/50 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                >
+                  <option value="todos">Todos os status</option>
+                  <option value="internado">Internado</option>
+                  <option value="alta">Alta</option>
+                  <option value="transferido">Transferido</option>
+                  <option value="obito">Óbito</option>
+                </select>
               </div>
             </div>
-          ) : filteredInternacoes.length === 0 ? (
-            <Card>
-              <CardContent className="p-8 text-center">
-                <Activity className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Nenhuma internação encontrada
-                </h3>
-                <p className="text-gray-500">
-                  {searchTerm || statusFilter
-                    ? 'Tente ajustar os filtros de busca.'
-                    : 'Comece registrando uma nova internação.'
-                  }
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            filteredInternacoes.map((internacao) => (
-            <Card key={internacao.id} className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                      {internacao.paciente_nome}
-                    </h3>
-                    <p className="text-gray-600 mb-2 flex items-center space-x-1">
-                      <User className="h-4 w-4" />
-                      <span>Responsável: {internacao.responsavel_nome}</span>
-                    </p>
-                    <p className="text-sm text-gray-500 flex items-center space-x-1">
-                      <Phone className="h-3 w-3" />
-                      <span>{internacao.responsavel_telefone}</span>
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    {getStatusBadge(internacao.status)}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 flex items-center space-x-1">
-                      <Stethoscope className="h-4 w-4" />
-                      <span>Médico</span>
-                    </p>
-                    <p className="text-gray-900">{internacao.medico_nome}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 flex items-center space-x-1">
-                      <Calendar className="h-4 w-4" />
-                      <span>Data Entrada</span>
-                    </p>
-                    <p className="text-gray-900">{formatarDataSimples(internacao.data_entrada)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 flex items-center space-x-1">
-                      <Clock className="h-4 w-4" />
-                      <span>Dias Internado</span>
-                    </p>
-                    <p className="text-gray-900">{internacao.dias_internado} dias</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 flex items-center space-x-1">
-                      <DollarSign className="h-4 w-4" />
-                      <span>Diária</span>
-                    </p>
-                    <p className="text-gray-900">
-                      R$ {parseFloat(internacao.valor_diaria).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </p>
-                  </div>
-                </div>
-
-                {internacao.data_alta && (
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-gray-700">Data de Alta</p>
-                    <p className="text-gray-900">{formatarDataSimples(internacao.data_alta)}</p>
-                  </div>
+          </div>
+          <div className="overflow-x-auto scrollbar-hide">
+            <table className="min-w-full">
+              <thead className="bg-muted/30">
+                <tr>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Paciente</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Responsável</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Entrada</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-right text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/50">
+                {loading ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-20 text-center text-muted-foreground">
+                      Carregando...
+                    </td>
+                  </tr>
+                ) : filteredInternacoes.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-20 text-center text-muted-foreground">
+                      Nenhuma internação encontrada.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredInternacoes.map((internacao) => (
+                    <tr key={internacao.id} className="hover:bg-muted/20 transition-colors group">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm font-bold text-foreground">{internacao.paciente_nome}</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-muted-foreground">{internacao.responsavel_nome}</div>
+                        <div className="text-[10px] text-muted-foreground/70 flex items-center">
+                          <Phone className="h-3 w-3 mr-1" />
+                          {internacao.responsavel_telefone}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-muted-foreground flex items-center">
+                          <Calendar className="h-4 w-4 mr-1 text-muted-foreground/50" />
+                          {formatarData(internacao.data_entrada)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {getStatusBadge(internacao.status)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => setEvolucaoModal({ isOpen: true, internacao })}
+                            className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                            title="Ver Evolução"
+                          >
+                            <Activity className="h-4 w-4" />
+                          </button>
+                          <button
+                             onClick={() => setEditarModal({ isOpen: true, internacao })}
+                             className="p-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors"
+                             title="Editar"
+                           >
+                             <Edit className="h-4 w-4" />
+                           </button>
+                           <button
+                             onClick={() => setAltaModal({ isOpen: true, internacao })}
+                             className="p-2 text-muted-foreground hover:text-orange-500 hover:bg-orange-500/10 rounded-lg transition-colors"
+                             title="Dar Alta"
+                           >
+                             <CheckCircle className="h-4 w-4" />
+                           </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
                 )}
-
-                <div className="mb-4">
-                  <p className="text-sm font-medium text-gray-700 mb-1">Motivo</p>
-                  <p className="text-gray-600 text-sm">{internacao.motivo}</p>
-                </div>
-
-                {internacao.diagnostico && (
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-gray-700 mb-1">Diagnóstico</p>
-                    <p className="text-gray-600 text-sm">{internacao.diagnostico}</p>
-                  </div>
-                )}
-
-                {internacao.observacoes_entrada && (
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-gray-700 mb-1">Observações de Entrada</p>
-                    <p className="text-gray-600 text-sm">{internacao.observacoes_entrada}</p>
-                  </div>
-                )}
-
-                {internacao.observacoes_alta && (
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-gray-700 mb-1">Observações de Alta</p>
-                    <p className="text-gray-600 text-sm">{internacao.observacoes_alta}</p>
-                  </div>
-                )}
-
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      console.log('Clicou em Ver Evoluções para:', internacao.pet_nome);
-                      setEvolucaoModal({ isOpen: true, internacao });
-                    }}
-                  >
-                    Ver Evoluções
-                  </Button>
-                  {internacao.status === 'internado' && (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          console.log('Clicou em Editar para:', internacao.pet_nome);
-                          setEditarModal({ isOpen: true, internacao });
-                        }}
-                      >
-                        Editar
-                      </Button>
-                      <Button
-                        size="sm"
-                        className="bg-green-600 hover:bg-green-700"
-                        onClick={() => {
-                          console.log('Clicou em Dar Alta para:', internacao.pet_nome);
-                          setAltaModal({ isOpen: true, internacao });
-                        }}
-                      >
-                        Dar Alta
-                      </Button>
-                    </>
-                  )}
-                  {internacao.status !== 'internado' && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        console.log('Clicou em Ver Detalhes para:', internacao.pet_nome);
-                        setEvolucaoModal({ isOpen: true, internacao });
-                      }}
-                    >
-                      Ver Detalhes
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-            ))
-          )}
-        </div>
+              </tbody>
+            </table>
+          </div>
+        </Card>
 
         {/* Modal de Nova Internação */}
         <NovaInternacaoModal

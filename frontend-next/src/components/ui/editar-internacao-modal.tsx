@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import InternacaoService, { Internacao } from '@/services/internacao';
-import PetsService, { Pet } from '@/services/pets';
+import PetsService, { Paciente } from '@/services/pets';
 import UsersService, { User } from '@/services/users';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -23,8 +23,8 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
     observacoes_entrada: '',
     valor_diaria: ''
   });
-  
-  const [pets, setPets] = useState<Pet[]>([]);
+
+  const [pets, setPets] = useState<Paciente[]>([]);
   const [veterinarios, setVeterinarios] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -34,13 +34,20 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
     if (isOpen) {
       loadData();
       if (internacao) {
+        // Formatar o valor da diária vindo do backend para a máscara de moeda
+        const valorOriginal = internacao.valor_diaria || 0;
+        const valorFormatado = new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        }).format(parseFloat(valorOriginal.toString()));
+
         setFormData({
-          pet: internacao.pet?.toString() || '',
-          veterinario_responsavel: internacao.veterinario_responsavel?.toString() || '',
+          pet: internacao.paciente?.toString() || '',
+          veterinario_responsavel: internacao.medico_responsavel?.toString() || '',
           motivo: internacao.motivo || '',
           diagnostico: internacao.diagnostico || '',
           observacoes_entrada: internacao.observacoes_entrada || '',
-          valor_diaria: internacao.valor_diaria?.toString() || ''
+          valor_diaria: valorFormatado
         });
       }
     }
@@ -50,12 +57,18 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
     setLoading(true);
     try {
       const [petsData, veterinariosData] = await Promise.all([
-        PetsService.getAllPets(),
+        PetsService.getAllPacientes(),
         UsersService.getAllUsers()
       ]);
-      
+
       setPets(petsData);
-      setVeterinarios(veterinariosData.filter(user => user.user_type === 2));
+
+      // Garantir que veterinariosData seja um array antes de filtrar
+      const vData = Array.isArray(veterinariosData)
+        ? veterinariosData
+        : (veterinariosData as any)?.results || [];
+
+      setVeterinarios(vData.filter((user: any) => user.user_type === 2));
     } catch (error: any) {
       console.error('Erro ao carregar dados:', error);
       toast({
@@ -70,7 +83,7 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!internacao) {
       toast({
         title: 'Erro',
@@ -79,7 +92,7 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
       });
       return;
     }
-    
+
     if (!formData.pet || !formData.veterinario_responsavel || !formData.motivo || !formData.valor_diaria) {
       toast({
         title: 'Erro',
@@ -91,23 +104,26 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
 
     try {
       setSaving(true);
-      
-      const dadosAtualizados = {
-        pet: parseInt(formData.pet),
-        veterinario_responsavel: parseInt(formData.veterinario_responsavel),
+
+      // Limpar a máscara para enviar o valor numérico ao backend
+      const numericValue = parseFloat(formData.valor_diaria.replace(/[^\d,]/g, '').replace(',', '.'));
+
+      const dadosParaEnviar = {
+        paciente: parseInt(formData.pet),
+        medico_responsavel: parseInt(formData.veterinario_responsavel),
         motivo: formData.motivo,
         diagnostico: formData.diagnostico,
         observacoes_entrada: formData.observacoes_entrada,
-        valor_diaria: parseFloat(formData.valor_diaria)
+        valor_diaria: numericValue
       };
-      
-      const internacaoAtualizada = await InternacaoService.updateInternacao(internacao.id, dadosAtualizados);
-      
+
+      await InternacaoService.updateInternacao(internacao.id, dadosParaEnviar);
+
       toast({
         title: 'Sucesso',
         description: 'Internação atualizada com sucesso',
       });
-      
+
       onUpdate();
       onClose();
     } catch (error: any) {
@@ -133,7 +149,7 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
             <X className="h-6 w-6" />
           </button>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="p-6">
           <div className="space-y-4">
             <div>
@@ -151,14 +167,14 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
                 </option>
                 {pets.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.nome} - {p.sexo === 'M' ? 'Macho' : 'Fêmea'}
+                    {p.nome}
                   </option>
                 ))}
               </select>
             </div>
-            
+
             <div>
-              <label htmlFor="veterinario" className="block text-sm font-medium text-gray-700 mb-1">Veterinário Responsável*</label>
+              <label htmlFor="veterinario" className="block text-sm font-medium text-gray-700 mb-1">Médico Responsável*</label>
               <select
                 id="veterinario"
                 value={formData.veterinario_responsavel}
@@ -168,7 +184,7 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
                 className="w-full border rounded-md px-3 py-2 disabled:bg-gray-100"
               >
                 <option value="">
-                  {loading ? 'Carregando veterinários...' : 'Selecione um veterinário'}
+                  {loading ? 'Carregando médicos...' : 'Selecione um médico'}
                 </option>
                 {veterinarios.map((v) => (
                   <option key={v.id} value={v.id}>
@@ -177,7 +193,7 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
                 ))}
               </select>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="motivo" className="block text-sm font-medium text-gray-700 mb-1">Motivo*</label>
@@ -197,23 +213,33 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
                   <option value="outros">Outros</option>
                 </select>
               </div>
-              
+
               <div>
-                <label htmlFor="valorDiaria" className="block text-sm font-medium text-gray-700 mb-1">Valor da Diária (R$)*</label>
+                <label htmlFor="valor_diaria" className="block text-sm font-medium text-gray-700 mb-1">Valor da Diária (R$)*</label>
                 <input
-                  id="valorDiaria"
-                  type="number"
-                  step="0.01"
-                  min="0"
+                  id="valor_diaria"
+                  type="text"
                   value={formData.valor_diaria}
-                  onChange={(e) => setFormData({ ...formData, valor_diaria: e.target.value })}
+                  onChange={(e) => {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value === '') {
+                      setFormData({ ...formData, valor_diaria: '' });
+                      return;
+                    }
+                    const amount = (parseInt(value) / 100).toFixed(2);
+                    const formatted = new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL'
+                    }).format(parseFloat(amount));
+                    setFormData({ ...formData, valor_diaria: formatted });
+                  }}
                   required
-                  placeholder="0.00"
+                  placeholder="R$ 0,00"
                   className="w-full border rounded-md px-3 py-2"
                 />
               </div>
             </div>
-            
+
             <div>
               <label htmlFor="diagnostico" className="block text-sm font-medium text-gray-700 mb-1">Diagnóstico*</label>
               <textarea
@@ -226,7 +252,7 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
                 placeholder="Descreva o diagnóstico..."
               />
             </div>
-            
+
             <div>
               <label htmlFor="observacoesEntrada" className="block text-sm font-medium text-gray-700 mb-1">Observações de Entrada</label>
               <textarea
@@ -239,7 +265,7 @@ export function EditarInternacaoModal({ isOpen, onClose, onUpdate, internacao }:
               />
             </div>
           </div>
-          
+
           <div className="flex justify-end gap-3 mt-6">
             <button
               type="button"

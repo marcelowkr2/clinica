@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { Pet } from '@/services/pets';
+import { Paciente } from '@/services/pets';
 
 interface EditarPacienteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (dadosAtualizados: Partial<Pet>) => void;
-  paciente: Pet | null;
+  onSave: (dadosAtualizados: Partial<Paciente>) => void;
+  paciente: Paciente | null;
 }
 
 export function EditarPacienteModal({ isOpen, onClose, onSave, paciente }: EditarPacienteModalProps) {
@@ -33,7 +33,7 @@ export function EditarPacienteModal({ isOpen, onClose, onSave, paciente }: Edita
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const dadosAtualizados: Partial<Pet> = {
+    const dadosAtualizados: Partial<Paciente> = {
       nome: formData.nome,
       sexo: formData.sexo,
       peso: formData.peso ? parseFloat(formData.peso) : undefined,
@@ -67,9 +67,9 @@ export function EditarPacienteModal({ isOpen, onClose, onSave, paciente }: Edita
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Dados do Pet */}
+          {/* Dados do Paciente */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Dados do Pet</h3>
+            <h3 className="text-lg font-semibold mb-4">Dados do Paciente</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -96,8 +96,8 @@ export function EditarPacienteModal({ isOpen, onClose, onSave, paciente }: Edita
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
-                  <option value="M">Macho</option>
-                  <option value="F">Fêmea</option>
+                  <option value="M">Masculino</option>
+                  <option value="F">Feminino</option>
                 </select>
               </div>
 

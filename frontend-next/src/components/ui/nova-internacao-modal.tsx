@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import InternacaoService from '@/services/internacao';
-import PetsService, { Pet } from '@/services/pets';
+import PetsService, { Paciente } from '@/services/pets';
 import UsersService, { User } from '@/services/users';
 
 interface NovaInternacaoModalProps {
@@ -19,8 +19,8 @@ export function NovaInternacaoModal({ isOpen, onClose, onSave }: NovaInternacaoM
   const [diagnostico, setDiagnostico] = useState('');
   const [observacoesEntrada, setObservacoesEntrada] = useState('');
   const [valorDiaria, setValorDiaria] = useState('');
-  
-  const [pets, setPets] = useState<Pet[]>([]);
+
+  const [pets, setPets] = useState<Paciente[]>([]);
   const [veterinarios, setVeterinarios] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -34,14 +34,14 @@ export function NovaInternacaoModal({ isOpen, onClose, onSave }: NovaInternacaoM
     setLoading(true);
     try {
       const [petsData, veterinariosData] = await Promise.all([
-        PetsService.getAllPets(),
+        PetsService.getAllPacientes(),
         UsersService.getAllUsers()
       ]);
-      
+
       setPets(petsData);
       // Verificar se veterinariosData é um array ou objeto paginado
-      const veterinariosArray = Array.isArray(veterinariosData) 
-        ? veterinariosData 
+      const veterinariosArray = Array.isArray(veterinariosData)
+        ? veterinariosData
         : veterinariosData.results || [];
       setVeterinarios(veterinariosArray.filter(user => user.user_type === 2));
     } catch (error: any) {
@@ -61,42 +61,46 @@ export function NovaInternacaoModal({ isOpen, onClose, onSave }: NovaInternacaoM
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!pet || !veterinario || !motivo || !diagnostico || !valorDiaria) {
       alert('Por favor, preencha todos os campos obrigatórios.');
       return;
     }
 
     try {
-      const novaInternacao = {
-        pet: parseInt(pet),
-        veterinario_responsavel: parseInt(veterinario),
+      // Limpar a máscara para enviar o valor numérico ao backend
+      const numericValue = parseFloat(valorDiaria.replace(/[^\d,]/g, '').replace(',', '.'));
+
+      const payload = {
+        paciente: parseInt(pet),
+        medico_responsavel: parseInt(veterinario),
         data_entrada: new Date().toISOString(),
-        motivo,
-        diagnostico,
+        motivo: motivo,
+        diagnostico: diagnostico,
         observacoes_entrada: observacoesEntrada || '',
-        status: 'internado' as const,
-        valor_diaria: parseFloat(valorDiaria)
+        status: 'internado',
+        valor_diaria: numericValue
       };
-      
-      const internacaoCriada = await InternacaoService.createInternacao(novaInternacao);
-      
+
+      console.log('🚀 Enviando payload de internação:', payload);
+      const internacaoCriada = await InternacaoService.createInternacao(payload);
+
       const petSelecionado = pets.find(p => p.id === parseInt(pet));
       const veterinarioSelecionado = veterinarios.find(v => v.id === parseInt(veterinario));
-      
+
       onSave({
         ...internacaoCriada,
         pet_nome: petSelecionado?.nome,
         veterinario_nome: `${veterinarioSelecionado?.first_name} ${veterinarioSelecionado?.last_name}`
       });
-      
+
       setPet('');
       setVeterinario('');
       setMotivo('');
       setDiagnostico('');
       setObservacoesEntrada('');
       setValorDiaria('');
-      
+
       onClose();
     } catch (error: any) {
       console.error('Erro ao criar internação:', error);
@@ -120,7 +124,7 @@ export function NovaInternacaoModal({ isOpen, onClose, onSave }: NovaInternacaoM
             <X className="h-6 w-6" />
           </button>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="p-6">
           <div className="space-y-4">
             <div>
@@ -138,14 +142,14 @@ export function NovaInternacaoModal({ isOpen, onClose, onSave }: NovaInternacaoM
                 </option>
                 {pets.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.nome} - {p.sexo === 'M' ? 'Macho' : 'Fêmea'}
+                    {p.nome}
                   </option>
                 ))}
               </select>
             </div>
-            
+
             <div>
-              <label htmlFor="veterinario" className="block text-sm font-medium text-gray-700 mb-1">Veterinário Responsável*</label>
+              <label htmlFor="veterinario" className="block text-sm font-medium text-gray-700 mb-1">Médico Responsável*</label>
               <select
                 id="veterinario"
                 value={veterinario}
@@ -155,7 +159,7 @@ export function NovaInternacaoModal({ isOpen, onClose, onSave }: NovaInternacaoM
                 className="w-full border rounded-md px-3 py-2 disabled:bg-gray-100"
               >
                 <option value="">
-                  {loading ? 'Carregando veterinários...' : 'Selecione um veterinário'}
+                  {loading ? 'Carregando médicos...' : 'Selecione um médico'}
                 </option>
                 {veterinarios.map((v) => (
                   <option key={v.id} value={v.id}>
@@ -164,7 +168,7 @@ export function NovaInternacaoModal({ isOpen, onClose, onSave }: NovaInternacaoM
                 ))}
               </select>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="motivo" className="block text-sm font-medium text-gray-700 mb-1">Motivo*</label>
@@ -184,23 +188,33 @@ export function NovaInternacaoModal({ isOpen, onClose, onSave }: NovaInternacaoM
                   <option value="outros">Outros</option>
                 </select>
               </div>
-              
+
               <div>
                 <label htmlFor="valorDiaria" className="block text-sm font-medium text-gray-700 mb-1">Valor da Diária (R$)*</label>
                 <input
                   id="valorDiaria"
-                  type="number"
-                  step="0.01"
-                  min="0"
+                  type="text"
                   value={valorDiaria}
-                  onChange={(e) => setValorDiaria(e.target.value)}
+                  onChange={(e) => {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value === '') {
+                      setValorDiaria('');
+                      return;
+                    }
+                    const amount = (parseInt(value) / 100).toFixed(2);
+                    const formatted = new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL'
+                    }).format(parseFloat(amount));
+                    setValorDiaria(formatted);
+                  }}
                   required
-                  placeholder="0.00"
+                  placeholder="R$ 0,00"
                   className="w-full border rounded-md px-3 py-2"
                 />
               </div>
             </div>
-            
+
             <div>
               <label htmlFor="diagnostico" className="block text-sm font-medium text-gray-700 mb-1">Diagnóstico*</label>
               <textarea
@@ -213,7 +227,7 @@ export function NovaInternacaoModal({ isOpen, onClose, onSave }: NovaInternacaoM
                 className="w-full border rounded-md px-3 py-2"
               />
             </div>
-            
+
             <div>
               <label htmlFor="observacoesEntrada" className="block text-sm font-medium text-gray-700 mb-1">Observações de Entrada</label>
               <textarea
@@ -221,12 +235,12 @@ export function NovaInternacaoModal({ isOpen, onClose, onSave }: NovaInternacaoM
                 value={observacoesEntrada}
                 onChange={(e) => setObservacoesEntrada(e.target.value)}
                 rows={3}
-                placeholder="Observações sobre o estado do animal na entrada"
+                placeholder="Observações sobre o estado do paciente na entrada"
                 className="w-full border rounded-md px-3 py-2"
               />
             </div>
           </div>
-          
+
           <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
             <button
               type="button"

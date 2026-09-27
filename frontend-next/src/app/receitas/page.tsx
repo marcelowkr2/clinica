@@ -72,12 +72,12 @@ export default function ReceitasPage() {
   const handlePrintReceita = (receita: Receita) => {
     // Simular impressão
     const printContent = `
-      RECEITA VETERINÁRIA
+      RECEITA MÉDICA
       
-      Paciente: ${receita.pet_nome}
-      Tutor: ${receita.tutor_nome}
+      Paciente: ${receita.paciente_nome}
+      Responsável: ${receita.responsavel_nome}
       Data: ${new Date(receita.data_prescricao).toLocaleDateString('pt-BR')}
-      Veterinário: ${receita.veterinario_nome}
+      Médico: ${receita.medico_nome}
       Diagnóstico: ${receita.diagnostico}
       
       MEDICAMENTOS:
@@ -93,7 +93,7 @@ export default function ReceitasPage() {
       printWindow.document.write(`
         <html>
           <head>
-            <title>Receita - ${receita.pet_nome}</title>
+            <title>Receita - ${receita.paciente_nome}</title>
             <style>
               body { font-family: Arial, sans-serif; padding: 20px; }
               h1 { color: #333; }
@@ -112,12 +112,12 @@ export default function ReceitasPage() {
   };
 
   const handleDownloadReceita = (receita: Receita) => {
-    const content = `RECEITA VETERINÁRIA
+    const content = `RECEITA MÉDICA
 
-Paciente: ${receita.pet_nome}
-Tutor: ${receita.tutor_nome}
+Paciente: ${receita.paciente_nome}
+Responsável: ${receita.responsavel_nome}
 Data: ${new Date(receita.data_prescricao).toLocaleDateString('pt-BR')}
-Veterinário: ${receita.veterinario_nome}
+Médico: ${receita.medico_nome}
 Diagnóstico: ${receita.diagnostico}
 
 MEDICAMENTOS:
@@ -131,7 +131,7 @@ Observações: ${receita.observacoes || 'Nenhuma observação adicional'}`;
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `receita-${receita.pet_nome}-${new Date().toISOString().split('T')[0]}.txt`;
+    a.download = `receita-${receita.paciente_nome}-${new Date().toISOString().split('T')[0]}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

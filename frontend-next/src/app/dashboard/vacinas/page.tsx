@@ -107,8 +107,8 @@ const VacinasPage: React.FC = () => {
 
   const handleDeletarAgendamento = async (agendamento: AgendamentoVacina) => {
     const confirmMessage = agendamento.status === 'aplicado'
-      ? `Tem certeza que deseja remover o registro da vacina ${agendamento.vacina_nome} aplicada em ${agendamento.pet_nome}?`
-      : `Tem certeza que deseja cancelar o agendamento da vacina ${agendamento.vacina_nome} para ${agendamento.pet_nome}?`;
+      ? `Tem certeza que deseja remover o registro da vacina ${agendamento.vacina_nome} aplicada em ${agendamento.paciente_nome}?`
+      : `Tem certeza que deseja cancelar o agendamento da vacina ${agendamento.vacina_nome} para ${agendamento.paciente_nome}?`;
 
     if (window.confirm(confirmMessage)) {
       try {
@@ -168,8 +168,8 @@ const VacinasPage: React.FC = () => {
 
   const filteredAgendamentos = agendamentos.filter(agendamento => {
     const matchesSearch = !searchTerm ||
-      agendamento.pet_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      agendamento.tutor_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      agendamento.paciente_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      agendamento.responsavel_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       agendamento.vacina_nome.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = !statusFilter || agendamento.status === statusFilter;
@@ -180,18 +180,18 @@ const VacinasPage: React.FC = () => {
   if (loading) {
     return (
       <VetLayout>
-        <div className="container mx-auto p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">Agendamentos de Vacinas</h1>
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold tracking-tight">Agendamentos de Vacinas</h1>
           </div>
           <div className="grid gap-4">
             {[...Array(5)].map((_, i) => (
               <Card key={i} className="animate-pulse">
                 <CardContent className="p-6">
                   <div className="space-y-3">
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                    <div className="h-4 bg-muted rounded w-1/2"></div>
+                    <div className="h-4 bg-muted rounded w-2/3"></div>
                   </div>
                 </CardContent>
               </Card>
@@ -204,7 +204,7 @@ const VacinasPage: React.FC = () => {
 
   return (
     <VetLayout>
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-blue-500/10 rounded-xl text-blue-600">
@@ -233,7 +233,7 @@ const VacinasPage: React.FC = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
-                  placeholder="Buscar por pet, tutor ou vacina..."
+                  placeholder="Buscar por paciente, responsável ou vacina..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"

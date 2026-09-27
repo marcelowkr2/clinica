@@ -1,8 +1,8 @@
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
-from .models import BanhoTosa
+from .models import Procedimento
 
-@receiver(m2m_changed, sender=BanhoTosa.servicos.through)
+@receiver(m2m_changed, sender=Procedimento.servicos.through)
 def update_valor_total(sender, instance, action, **kwargs):
     """
     Atualiza o valor_total quando os serviços são alterados
@@ -16,7 +16,7 @@ def update_valor_total(sender, instance, action, **kwargs):
             instance.tempo_estimado = 0
         
         # Salvar sem chamar o método save() para evitar recursão
-        BanhoTosa.objects.filter(pk=instance.pk).update(
+        Procedimento.objects.filter(pk=instance.pk).update(
             valor_total=instance.valor_total,
             tempo_estimado=instance.tempo_estimado
         )

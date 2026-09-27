@@ -278,9 +278,9 @@ const PacientesService = {
   },
 
   // Responsáveis
-  getAllResponsaveis: async (): Promise<Responsavel[]> => {
+  getAllResponsaveis: async (params?: any): Promise<Responsavel[]> => {
     try {
-      const response = await api.get('/api/responsaveis/');
+      const response = await api.get('/api/responsaveis/', { params });
       return response.data;
     } catch (error) {
       throw error;
@@ -298,32 +298,16 @@ const PacientesService = {
 
   findOrCreateResponsavel: async (responsavelData: { nome: string; email?: string; telefone: string; endereco?: string }): Promise<number> => {
     try {
-      // Tentar encontrar um responsável existente pelo telefone
-      const responsaveis = await PacientesService.getAllResponsaveis();
-      
-      const users = await Promise.all(
-        responsaveis.map(async (responsavel) => {
-          try {
-            const user = await UsersService.getUser(responsavel.user);
-            return { responsavel, user };
-          } catch (error) {
-            return null;
-          }
-        })
-      );
+      // Tentar encontrar um responsável existente pelo telefone usando o novo filtro do backend
+      const responsaveis = await PacientesService.getAllResponsaveis({ telefone: responsavelData.telefone });
 
-      const validUsers = users.filter(item => item !== null) as { responsavel: Responsavel, user: any }[];
-      
-      const normalizePhone = (phone: string) => phone ? phone.replace(/\D/g, '') : '';
-      const normalizedInputPhone = normalizePhone(responsavelData.telefone);
-
-      let existingResponsavel = validUsers.find(item => normalizePhone(item.user.phone) === normalizedInputPhone);
-
-      if (existingResponsavel) {
-        return existingResponsavel.responsavel.id;
+      if (responsaveis && responsaveis.length > 0) {
+        console.log('✅ Responsável encontrado pelo telefone:', responsavelData.telefone);
+        return responsaveis[0].id;
       }
 
       // Se não encontrou, criar um novo usuário e responsável
+      console.log('📝 Criando novo responsável:', responsavelData.nome);
       const nomePartes = responsavelData.nome.trim().split(' ');
       const firstName = nomePartes[0];
       const lastName = nomePartes.slice(1).join(' ') || '';
@@ -344,12 +328,14 @@ const PacientesService = {
         user: newUser.id,
         endereco: responsavelData.endereco || ''
       });
-      
+
       return response.data.id;
 
     } catch (error) {
       console.error('Erro ao buscar/criar responsável:', error);
-      return 1; // Fallback
+      // Em vez de retornar 1 fixo, vamos tentar retornar o primeiro responsável se houver erro
+      // ou lançar o erro para o usuário saber o que aconteceu
+      throw error;
     }
   },
 
@@ -436,6 +422,24 @@ const PacientesService = {
       const response = await api.get('/api/agendamentos-vacina/estatisticas/');
       return response.data;
     } catch (error) {
+      throw error;
+    }
+  },
+
+  // Buscar pacientes formatados para receitas/exames
+  getPetsParaReceitas: async (): Promise<any[]> => {
+    try {
+      const response = await api.get('/api/pacientes-agendamento/');
+      return response.data.map((paciente: any) => ({
+        id: paciente.id,
+        nome: paciente.nome,
+        especie: 'Humana', // Adaptado para clínica geral
+        raca: 'N/A',
+        tutor_nome: `${paciente.responsavel.user.first_name} ${paciente.responsavel.user.last_name}`.trim(),
+        tutor_telefone: paciente.responsavel.user.phone || 'Não informado'
+      }));
+    } catch (error) {
+      console.error('Erro ao buscar pacientes para receitas:', error);
       throw error;
     }
   },

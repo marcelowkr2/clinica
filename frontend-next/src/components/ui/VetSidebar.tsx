@@ -101,7 +101,7 @@ export function VetSidebar() {
         <SidebarHeaderTitle>
           <div className="ml-1">
             <h2 className="text-lg font-extrabold tracking-tight text-foreground">MediHub</h2>
-            <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground/60">Gestão Clínica</p>
+            <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground/60">Gestão Médica</p>
           </div>
         </SidebarHeaderTitle>
       </SidebarHeader>

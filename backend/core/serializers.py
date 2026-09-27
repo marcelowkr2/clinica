@@ -7,11 +7,11 @@ from .models import User
 class UserSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(allow_blank=True, required=False)
     cpf = serializers.CharField(allow_blank=True, required=False)
-    crmv = serializers.CharField(allow_blank=True, required=False)
+    crm = serializers.CharField(allow_blank=True, required=False)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'user_type', 'phone', 'cpf', 'crmv']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'user_type', 'phone', 'cpf', 'crm']
 
 # Serializer de registro
 class RegisterSerializer(serializers.ModelSerializer):
@@ -19,13 +19,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'user_type', 'phone', 'cpf', 'crmv']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'user_type', 'phone', 'cpf', 'crm']
 
     def create(self, validated_data):
         # Tratar campos opcionais
         cpf = validated_data.get('cpf') or None
         phone = validated_data.get('phone') or None
-        crmv = validated_data.get('crmv') or None
+        crm = validated_data.get('crm') or None
 
         user = User.objects.create_user(
             username=validated_data['username'],
@@ -36,7 +36,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             user_type=validated_data.get('user_type', 4),
             phone=phone,
             cpf=cpf,
-            crmv=crmv,
+            crm=crm,
         )
         return user
 

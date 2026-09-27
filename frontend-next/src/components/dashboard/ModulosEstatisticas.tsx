@@ -14,7 +14,8 @@ import {
   TrendingUp,
   AlertTriangle,
   CheckCircle,
-  Clock
+  Clock,
+  HeartPulse
 } from 'lucide-react';
 import InternacaoService from '@/services/internacao';
 import ExamesService from '@/services/exames';

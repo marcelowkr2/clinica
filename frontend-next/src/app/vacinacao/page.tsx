@@ -38,81 +38,51 @@ export default function VacinacaoPage() {
   const dadosSimulados: Vacinacao[] = [
     {
       id: 1,
-      paciente_nome: "Rex",
-      tutor_nome: "João Silva",
+      paciente_nome: "João Silva",
+      tutor_nome: "Maria Silva",
       tutor_telefone: "(11) 99999-9999",
-      vacina: "V10 (Múltipla)",
+      vacina: "Gripe (Influenza)",
       data_aplicacao: "2024-01-15T10:00:00",
-      data_proxima_dose: "2024-02-15T10:00:00",
+      data_proxima_dose: "2025-01-15T10:00:00",
       lote: "VAC2024001",
-      fabricante: "Zoetis",
+      fabricante: "Sanofi",
       veterinario: "Dr. Maria Santos",
-      observacoes: "Primeira dose da série anual",
+      observacoes: "Dose anual",
       status: "aplicada",
       dose_numero: 1,
-      total_doses: 3
+      total_doses: 1
     },
     {
       id: 2,
-      paciente_nome: "Mimi",
-      tutor_nome: "Ana Costa",
+      paciente_nome: "Ana Oliveira",
+      tutor_nome: "Pedro Oliveira",
       tutor_telefone: "(11) 88888-8888",
-      vacina: "Antirrábica",
+      vacina: "Hepatite B",
       data_aplicacao: "2024-01-20T14:00:00",
-      lote: "RAB2024005",
-      fabricante: "Merial",
+      lote: "HEP2024005",
+      fabricante: "GSK",
       veterinario: "Dr. Carlos Lima",
-      observacoes: "Reforço anual",
+      observacoes: "Primeira dose da série",
       status: "agendada",
       dose_numero: 1,
-      total_doses: 1
+      total_doses: 3
     },
     {
       id: 3,
-      paciente_nome: "Thor",
-      tutor_nome: "Pedro Oliveira",
+      paciente_nome: "Pedro Oliveira",
+      tutor_nome: "Maria Oliveira",
       tutor_telefone: "(11) 77777-7777",
-      vacina: "V10 (Múltipla)",
+      vacina: "Antitetânica",
       data_aplicacao: "2023-12-15T09:00:00",
       data_proxima_dose: "2024-01-10T09:00:00",
-      lote: "VAC2023089",
-      fabricante: "Zoetis",
+      lote: "TET2023089",
+      fabricante: "Butantan",
       veterinario: "Dr. Ana Rodrigues",
-      observacoes: "Segunda dose - ATRASADA",
+      observacoes: "Reforço - ATRASADA",
       status: "atrasada",
-      dose_numero: 2,
-      total_doses: 3
-    },
-    {
-      id: 4,
-      paciente_nome: "Luna",
-      tutor_nome: "Maria Fernanda",
-      tutor_telefone: "(11) 66666-6666",
-      vacina: "Gripe Canina",
-      data_aplicacao: "2024-01-12T11:30:00",
-      lote: "GRI2024012",
-      fabricante: "Virbac",
-      veterinario: "Dr. Roberto Silva",
-      observacoes: "Dose única anual",
-      status: "aplicada",
       dose_numero: 1,
       total_doses: 1
     },
-    {
-      id: 5,
-      paciente_nome: "Bella",
-      tutor_nome: "Carlos Mendes",
-      tutor_telefone: "(11) 55555-5555",
-      vacina: "V8 (Múltipla)",
-      data_aplicacao: "2024-01-25T15:00:00",
-      lote: "VAC2024015",
-      fabricante: "Zoetis",
-      veterinario: "Dr. Maria Santos",
-      observacoes: "Primeira vacinação - filhote",
-      status: "agendada",
-      dose_numero: 1,
-      total_doses: 3
-    }
   ];
 
   useEffect(() => {
@@ -192,14 +162,14 @@ export default function VacinacaoPage() {
   };
 
   const filteredVacinacoes = vacinacoes.filter(vacinacao => {
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch = searchTerm === '' ||
       vacinacao.paciente_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vacinacao.tutor_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vacinacao.vacina.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vacinacao.veterinario.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = statusFilter === 'todos' || vacinacao.status === statusFilter;
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -221,19 +191,19 @@ export default function VacinacaoPage() {
             <Pill className="h-8 w-8 text-pink-600" />
             <h1 className="text-2xl font-bold">Vacinação</h1>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 mt-4 sm:mt-0 w-full sm:w-auto">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <input
+                <input
                 type="text"
-                placeholder="Buscar por paciente, tutor, vacina ou veterinário..."
+                placeholder="Buscar por paciente, responsável, vacina ou médico..."
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-80"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            
+
             <select
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={statusFilter}
@@ -269,7 +239,7 @@ export default function VacinacaoPage() {
               <Shield className="h-8 w-8 text-green-600" />
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
@@ -281,7 +251,7 @@ export default function VacinacaoPage() {
               <Calendar className="h-8 w-8 text-blue-600" />
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
@@ -293,7 +263,7 @@ export default function VacinacaoPage() {
               <AlertTriangle className="h-8 w-8 text-red-600" />
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex items-center justify-between">
               <div>

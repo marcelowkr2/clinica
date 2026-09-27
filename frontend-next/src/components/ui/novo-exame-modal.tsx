@@ -6,13 +6,11 @@ import ExamesService from '@/services/exames';
 import PetsService from '@/services/pets';
 import UsersService from '@/services/users';
 
-interface Pet {
+interface Paciente {
   id: number;
   nome: string;
-  especie: string;
-  raca: string;
-  tutor_nome: string;
-  tutor_telefone: string;
+  responsavel_nome: string;
+  responsavel_telefone: string;
 }
 
 interface TipoExame {
@@ -23,7 +21,7 @@ interface TipoExame {
   tempo_resultado: number;
 }
 
-interface Veterinario {
+interface Medico {
   id: number;
   username: string;
   email: string;
@@ -32,7 +30,7 @@ interface Veterinario {
   user_type: number;
   phone?: string;
   cpf?: string;
-  crmv?: string;
+  crm?: string;
   is_active: boolean;
   date_joined: string;
 }
@@ -48,14 +46,14 @@ export function NovoExameModal({ isOpen, onClose, onSubmit }: NovoExameModalProp
   const [formData, setFormData] = useState({
     pet: '',
     tipo_exame: '',
-    veterinario_solicitante: '',
+    medico_solicitante: '',
     data_solicitacao: new Date().toISOString().slice(0, 16),
     prioridade: 'normal' as const
   });
-  
-  const [pets, setPets] = useState<Pet[]>([]);
+
+  const [pets, setPets] = useState<Paciente[]>([]);
   const [tiposExame, setTiposExame] = useState<TipoExame[]>([]);
-  const [veterinarios, setVeterinarios] = useState<Veterinario[]>([]);
+  const [veterinarios, setVeterinarios] = useState<Medico[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -74,9 +72,9 @@ export function NovoExameModal({ isOpen, onClose, onSubmit }: NovoExameModalProp
           ExamesService.getTiposExame(),
           UsersService.getMedicos()
         ]);
-      
+
         console.log('Dados carregados com sucesso:');
-        console.log('Pets:', petsData);
+        console.log('Pacientes:', petsData);
         console.log('Tipos de exame:', tiposData);
         console.log('Médicos:', medicosData);
         setPets(petsData);
@@ -99,8 +97,8 @@ export function NovoExameModal({ isOpen, onClose, onSubmit }: NovoExameModalProp
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.pet || !formData.tipo_exame || !formData.veterinario_solicitante) {
+
+    if (!formData.pet || !formData.tipo_exame || !formData.medico_solicitante) {
       toast({
         title: 'Erro',
         description: 'Preencha todos os campos obrigatórios',
@@ -111,16 +109,16 @@ export function NovoExameModal({ isOpen, onClose, onSubmit }: NovoExameModalProp
 
     try {
       setLoading(true);
-      
+
       const exameData = {
-        pet: parseInt(formData.pet),
+        paciente: parseInt(formData.pet),
         tipo_exame: parseInt(formData.tipo_exame),
-        veterinario_solicitante: parseInt(formData.veterinario_solicitante),
+        medico_solicitante: parseInt(formData.medico_solicitante),
         data_solicitacao: new Date(formData.data_solicitacao).toISOString(),
         prioridade: formData.prioridade,
         status: 'solicitado'
       };
-      
+
       onSubmit(exameData);
       resetForm();
       onClose();
@@ -140,7 +138,7 @@ export function NovoExameModal({ isOpen, onClose, onSubmit }: NovoExameModalProp
     setFormData({
       pet: '',
       tipo_exame: '',
-      veterinario_solicitante: '',
+      medico_solicitante: '',
       data_solicitacao: new Date().toISOString().slice(0, 16),
       prioridade: 'normal'
     });
@@ -165,7 +163,7 @@ export function NovoExameModal({ isOpen, onClose, onSubmit }: NovoExameModalProp
             <X className="h-6 w-6" />
           </button>
         </div>
-        
+
         <div className="p-6">
           {loading ? (
             <div className="flex items-center justify-center py-8">
@@ -190,12 +188,12 @@ export function NovoExameModal({ isOpen, onClose, onSubmit }: NovoExameModalProp
                     <option value="">Selecione um paciente</option>
                     {pets.map((pet) => (
                       <option key={pet.id} value={pet.id}>
-                        {pet.nome} - {pet.tutor_nome}
+                        {pet.nome} - {pet.responsavel_nome}
                       </option>
                     ))}
                   </select>
                 </div>
-                
+
                 <div>
                   <label htmlFor="tipo_exame" className="block text-sm font-medium text-gray-700 mb-1">
                     <TestTube className="inline h-4 w-4 mr-1" />
@@ -220,17 +218,17 @@ export function NovoExameModal({ isOpen, onClose, onSubmit }: NovoExameModalProp
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="veterinario_solicitante" className="block text-sm font-medium text-gray-700 mb-1">
-                    Veterinário Solicitante*
+                  <label htmlFor="medico_solicitante" className="block text-sm font-medium text-gray-700 mb-1">
+                    Médico Solicitante*
                   </label>
                   <select
-                    id="veterinario_solicitante"
-                    value={formData.veterinario_solicitante}
-                    onChange={(e) => setFormData({ ...formData, veterinario_solicitante: e.target.value })}
+                    id="medico_solicitante"
+                    value={formData.medico_solicitante}
+                    onChange={(e) => setFormData({ ...formData, medico_solicitante: e.target.value })}
                     required
                     className="w-full border rounded-md px-3 py-2"
                   >
-                    <option value="">Selecione o veterinário</option>
+                    <option value="">Selecione o médico</option>
                     {veterinarios.map((vet) => (
                       <option key={vet.id} value={vet.id}>
                         {`${vet.first_name} ${vet.last_name}`.trim()}
@@ -238,7 +236,7 @@ export function NovoExameModal({ isOpen, onClose, onSubmit }: NovoExameModalProp
                     ))}
                   </select>
                 </div>
-                
+
                 <div>
                   <label htmlFor="data_solicitacao" className="block text-sm font-medium text-gray-700 mb-1">
                     <Calendar className="inline h-4 w-4 mr-1" />
@@ -271,9 +269,9 @@ export function NovoExameModal({ isOpen, onClose, onSubmit }: NovoExameModalProp
                   <option value="urgente">Urgente</option>
                 </select>
               </div>
-              
 
-              
+
+
               <div className="flex justify-end gap-3 mt-6">
                 <button
                   type="button"

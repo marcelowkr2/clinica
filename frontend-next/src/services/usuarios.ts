@@ -5,7 +5,7 @@ export interface Usuario {
   email: string;
   telefone: string;
   cargo: string;
-  perfil: 'admin' | 'veterinario' | 'recepcionista' | 'auxiliar';
+  perfil: 'admin' | 'medico' | 'recepcionista' | 'auxiliar';
   status: 'ativo' | 'inativo' | 'bloqueado';
   dataCadastro: string;
   ultimoAcesso: string;
@@ -18,7 +18,7 @@ export interface CreateUsuarioData {
   email: string;
   telefone: string;
   cargo: string;
-  perfil: 'admin' | 'veterinario' | 'recepcionista' | 'auxiliar';
+  perfil: 'admin' | 'medico' | 'recepcionista' | 'auxiliar';
   senha: string;
   permissoes: string[];
 }
@@ -35,10 +35,10 @@ const usuariosMockados: Usuario[] = [
   {
     id: 1,
     nome: 'Dr. João Silva',
-    email: 'joao.silva@vethub.com',
+    email: 'joao.silva@medihub.com',
     telefone: '(11) 99999-1111',
-    cargo: 'Veterinário Clínico',
-    perfil: 'veterinario',
+    cargo: 'Médico Clínico',
+    perfil: 'medico',
     status: 'ativo',
     dataCadastro: '2024-01-15',
     ultimoAcesso: '2024-12-20 14:30',
@@ -50,7 +50,7 @@ const usuariosMockados: Usuario[] = [
 
 // Serviço de Usuários
 class UsuariosService {
-  private baseURL = 'http://127.0.0.1:8000/api';
+  private baseURL = 'http://localhost:8001/api';
   private cache = new Map<number, Usuario>();
   private cacheExpiry = new Map<number, number>();
   private CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
@@ -184,7 +184,7 @@ class UsuariosService {
   private mapApiUser(apiUser: any): Usuario {
     const perfilMap: Record<number, Usuario['perfil']> = {
       1: 'admin',
-      2: 'veterinario',
+      2: 'medico',
       3: 'recepcionista',
       4: 'auxiliar'
     };
@@ -193,15 +193,15 @@ class UsuariosService {
       nome: `${apiUser.first_name} ${apiUser.last_name}`.trim() || apiUser.username,
       email: apiUser.email,
       telefone: apiUser.phone || '',
-      cargo: apiUser.user_type === 1 ? 'Administrador' : apiUser.user_type === 2 ? 'Veterinário' : apiUser.user_type === 3 ? 'Recepcionista' : 'Auxiliar',
+      cargo: apiUser.user_type === 1 ? 'Administrador' : apiUser.user_type === 2 ? 'Médico' : apiUser.user_type === 3 ? 'Recepcionista' : 'Auxiliar',
       perfil: perfilMap[apiUser.user_type] || 'auxiliar',
       status: 'ativo',
       dataCadastro: new Date().toISOString().split('T')[0],
       ultimoAcesso: 'Não disponível',
       permissoes: apiUser.user_type === 1 ? ['todos'] :
                   apiUser.user_type === 2 ? ['consultas','exames','receitas','cirurgias'] :
-                  apiUser.user_type === 3 ? ['agendamentos','clientes','pets','vendas'] :
-                  ['pets']
+                  apiUser.user_type === 3 ? ['agendamentos','clientes','pacientes','vendas'] :
+                  ['pacientes']
     };
   }
 }

@@ -42,7 +42,11 @@ const UsersService = {
 
   createUser: async (userData: Omit<User, 'id' | 'date_joined' | 'is_active'> & { password: string }): Promise<User> => {
     try {
-      const response = await api.post('/api/register/', userData);
+      const payload = {
+        ...userData,
+        password2: userData.password
+      };
+      const response = await api.post('/api/register/', payload);
       return response.data.user; // O endpoint register retorna { user: ..., message: ... }
     } catch (error) {
       throw error;

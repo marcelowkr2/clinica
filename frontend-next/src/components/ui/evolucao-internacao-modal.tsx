@@ -8,14 +8,14 @@ import { useToast } from '@/components/ui/use-toast';
 
 interface Internacao {
   id: number;
-  pet_nome: string;
-  tutor_nome: string;
-  tutor_telefone: string;
+  paciente_nome: string;
+  responsavel_nome: string;
+  responsavel_telefone: string;
   data_entrada: string;
   data_alta?: string;
   motivo: string;
   status: 'internado' | 'alta' | 'transferido' | 'obito';
-  veterinario_nome: string;
+  medico_nome: string;
   diagnostico?: string;
   observacoes_entrada?: string;
   observacoes_alta?: string;
@@ -50,7 +50,7 @@ export function EvolucaoInternacaoModal({ isOpen, onClose, internacao }: Evoluca
 
   const fetchEvolucoes = async () => {
     if (!internacao) return;
-    
+
     try {
       setLoading(true);
       const data = await InternacaoService.getEvolucoes(internacao.id);
@@ -69,7 +69,7 @@ export function EvolucaoInternacaoModal({ isOpen, onClose, internacao }: Evoluca
 
   const handleAddEvolucao = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!novaEvolucao.evolucao.trim()) {
       toast({
         title: 'Erro',
@@ -84,7 +84,7 @@ export function EvolucaoInternacaoModal({ isOpen, onClose, internacao }: Evoluca
     try {
       const evolucaoData = {
         internacao: internacao.id,
-        veterinario: user?.id,
+        medico: user?.id,
         evolucao: novaEvolucao.evolucao,
         temperatura: novaEvolucao.temperatura ? parseFloat(novaEvolucao.temperatura) : undefined,
         peso: novaEvolucao.peso ? parseFloat(novaEvolucao.peso) : undefined,
@@ -92,7 +92,7 @@ export function EvolucaoInternacaoModal({ isOpen, onClose, internacao }: Evoluca
       };
 
       await InternacaoService.createEvolucao(evolucaoData);
-      
+
       toast({
         title: 'Sucesso',
         description: 'Evolução adicionada com sucesso',
@@ -132,12 +132,12 @@ export function EvolucaoInternacaoModal({ isOpen, onClose, internacao }: Evoluca
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-xl font-semibold">Evolução - {internacao?.pet_nome || 'Paciente'}</h2>
+          <h2 className="text-xl font-semibold">Evolução - {internacao?.paciente_nome || 'Paciente'}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X className="h-6 w-6" />
           </button>
         </div>
-        
+
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-medium">Histórico de Evoluções</h3>
@@ -167,7 +167,7 @@ export function EvolucaoInternacaoModal({ isOpen, onClose, internacao }: Evoluca
                     required
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -182,7 +182,7 @@ export function EvolucaoInternacaoModal({ isOpen, onClose, internacao }: Evoluca
                       placeholder="38.5"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Peso (kg)
@@ -197,7 +197,7 @@ export function EvolucaoInternacaoModal({ isOpen, onClose, internacao }: Evoluca
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Observações
@@ -210,7 +210,7 @@ export function EvolucaoInternacaoModal({ isOpen, onClose, internacao }: Evoluca
                     placeholder="Observações adicionais..."
                   />
                 </div>
-                
+
                 <div className="flex gap-2">
                   <button
                     type="submit"
@@ -253,12 +253,12 @@ export function EvolucaoInternacaoModal({ isOpen, onClose, internacao }: Evoluca
                       {evolucao.veterinario_nome}
                     </div>
                   </div>
-                  
+
                   <div className="mb-3">
                     <h5 className="font-medium mb-2">Evolução:</h5>
                     <p className="text-gray-700">{evolucao.evolucao}</p>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                     {evolucao.temperatura && (
                       <div className="flex items-center gap-2 text-sm">
@@ -273,7 +273,7 @@ export function EvolucaoInternacaoModal({ isOpen, onClose, internacao }: Evoluca
                       </div>
                     )}
                   </div>
-                  
+
                   {evolucao.observacoes && (
                     <div>
                       <h6 className="font-medium mb-1">Observações:</h6>
